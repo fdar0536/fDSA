@@ -16,3 +16,5 @@ src/build-*
 src/build-*/*
 build-*
 build-*/*
+build
+

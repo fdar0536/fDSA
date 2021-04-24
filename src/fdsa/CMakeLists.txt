@@ -40,3 +40,66 @@ target_include_directories(fDSA
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
     $<BUILD_INTERFACE:${Boost_INCLUDE_DIRS}>
 )
+
+#install
+set_target_properties(fDSA
+    PROPERTIES
+
+    EXPORT_NAME Yutils
+
+    VERSION ${PROJECT_VERSION}
+
+    PUBLIC_HEADER
+    "${CMAKE_SOURCE_DIR}/include/fdsa.h"
+
+    PRIVATE_HEADER
+    "${CMAKE_SOURCE_DIR}/include/internal/defines.h;\
+${CMAKE_SOURCE_DIR}/include/internal/ptrmap.h;\
+${CMAKE_SOURCE_DIR}/include/internal/ptrvector.h;\
+${CMAKE_SOURCE_DIR}/include/internal/vector.h"
+)
+
+install(
+    TARGETS fDSA
+    DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}
+
+    EXPORT fDSATargets
+    DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}
+
+    LIBRARY
+    DESTINATION
+    ${CMAKE_INSTALL_LIBDIR}
+
+    RUNTIME
+    DESTINATION
+    ${CMAKE_INSTALL_BINDIR}
+    COMPONENT
+    runtime
+
+    ARCHIVE
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT
+    devel
+
+    PUBLIC_HEADER
+    DESTINATION
+    ${CMAKE_INSTALL_INCLUDEDIR}/fdsa
+    COMPONENT
+    devel
+
+    PRIVATE_HEADER
+    DESTINATION
+    ${CMAKE_INSTALL_INCLUDEDIR}/fdsa/internal
+    COMPONENT
+    devel
+)
+
+install(
+    EXPORT ${CMAKE_PROJECT_NAME}Targets
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/${CMAKE_PROJECT_NAME}
+    FILE ${CMAKE_PROJECT_NAME}Targets.cmake
+    NAMESPACE ${CMAKE_PROJECT_NAME}::
+    COMPONENT devel
+)

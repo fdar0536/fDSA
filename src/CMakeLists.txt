@@ -32,6 +32,8 @@ endif (UNIX) # end if (UNIX)
 
 enable_testing()
 
+include(GNUInstallDirs)
+
 include(fdsa/CMakeLists.txt)
 
 option(BUILD_TESTING_CASES "Build testing cases" ON)
