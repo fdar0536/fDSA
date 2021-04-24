@@ -11,4 +11,4 @@ target_include_directories(testVector
     $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
 )
 
-add_test(fDSAVector fDSA)
+add_test(fDSAVector testVector)
