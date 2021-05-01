@@ -33,27 +33,27 @@ extern "C"
 {
 #endif
 
-typedef struct Node
+typedef struct ListNode
 {
     uint8_t *data;
 
-    struct Node *priv;
+    struct ListNode *priv;
 
-    struct Node *next;
-} Node;
+    struct ListNode *next;
+} ListNode;
 
 typedef struct List
 {
     fdsa_types id;
 
-    Node *root;
+    ListNode *root;
 
     fdsa_freeFunc dataFreeFunc;
 } List;
 
 fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc);
 
-Node *createNode();
+ListNode *createListNode();
 
 #ifdef __cplusplus
 }

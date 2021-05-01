@@ -32,7 +32,7 @@ fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
     List *ret = calloc(1, sizeof(List));
     if (!ret) return NULL;
 
-    ret->root = createNode();
+    ret->root = createListNode();
     if (!ret->root)
     {
         free(ret);
@@ -41,16 +41,16 @@ fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
 
     ret->id = fdsa_types_ptrLinkedList;
     ret->dataFreeFunc = dataFreeFunc;
-    Node *root = ret->root;
+    ListNode *root = ret->root;
     root->priv = root;
     root->next = root;
 
     return ret;
 }
 
-Node *createNode()
+ListNode *createListNode()
 {
-    Node *ret = calloc(1, sizeof(Node));
+    ListNode *ret = calloc(1, sizeof(ListNode));
     if (!ret) return NULL;
 
     ret->data = NULL;
