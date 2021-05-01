@@ -23,55 +23,37 @@
 
 #pragma once
 
+#include <inttypes.h>
+
+#include "include/internal/defines.h"
+#include "include/internal/ptrlinkedlist.h"
+
 #ifdef __cplusplus
 extern "C"
 {
 #endif
-/**
- * @enum fdsa_exitstate
- * It defines the return state from fdsa APIs.
- */
-typedef enum fdsa_exitstate
+
+typedef struct Node
 {
-    fdsa_success, /**< success */
-    fdsa_successWithWarning, /**< success but with warning */
-    fdsa_failed /**< failed */
-} fdsa_exitstate;
+    uint8_t *data;
 
-/**
- * @enum fdsa_types
- * The type ID for fdsa_handle
- */
-typedef enum fdsa_types
+    struct Node *priv;
+
+    struct Node *next;
+} Node;
+
+typedef struct List
 {
-    fdsa_types_ptrLinkedList,
-    fdsa_types_ptrMap, /**< map of pointer */
-    fdsa_types_ptrVector, /**< vector of pointer */
-    fdsa_types_vector, /**< vector */
-} fdsa_types;
+    fdsa_types id;
 
-/**
- * @typedef fdsa_cmpFunc
- * A function for comparison
- * @param lhs
- * @param rhs
- * @return if the return value is less than 0, indicate lhs is less than rhs;
- *         if the return value is equal to 0, indicate lhs is equal to rhs;
- *         else the return value is greater than 0.
- */
-typedef int (*fdsa_cmpFunc)(const void *lhs, const void *rhs);
+    Node *root;
 
-/**
- * @typedef fdsa_freeFunc
- * A function for free memory
- * @param toBeFreed the pointer to be freed
- */
-typedef void (*fdsa_freeFunc)(void *toBeFreed);
+    fdsa_freeFunc dataFreeFunc;
+} List;
 
-/**
- * a pointer for the object return from fdsa API.
- */
-typedef void* fdsa_handle;
+fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc);
+
+Node *createNode();
 
 #ifdef __cplusplus
 }

@@ -1,5 +1,6 @@
 set(fdsa_public_headers
     include/internal/defines.h
+    include/internal/ptrlinkedlist.h
     include/internal/ptrmap.h
     include/internal/ptrvector.h
     include/internal/vector.h
@@ -8,6 +9,7 @@ set(fdsa_public_headers
 
 set(fdsa_priv_headers
     fdsa/fdsa.h
+    fdsa/ptrlinkedlist.h
     fdsa/ptrmap.h
     fdsa/ptrvector.h
     fdsa/types.h
@@ -19,6 +21,7 @@ set(fdsa_priv_headers
 set(fdsa_src
     fdsa/fdsa.c
     fdsa/init.c
+    fdsa/ptrlinkedlist.c
     fdsa/ptrmap.c
     fdsa/ptrvector.c
     fdsa/types.c
@@ -52,6 +55,7 @@ set_target_properties(fDSA
 
     PRIVATE_HEADER
     "${CMAKE_SOURCE_DIR}/include/internal/defines.h;\
+${CMAKE_SOURCE_DIR}/include/internal/ptrlinkedlist.h;\
 ${CMAKE_SOURCE_DIR}/include/internal/ptrmap.h;\
 ${CMAKE_SOURCE_DIR}/include/internal/ptrvector.h;\
 ${CMAKE_SOURCE_DIR}/include/internal/vector.h"

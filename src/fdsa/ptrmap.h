@@ -32,33 +32,34 @@ extern "C"
 {
 #endif
 
-typedef enum NodeColor
+typedef enum RBTreeNodeColor
 {
-    rad, black
-} NodeColor;
+    RBTreeNodeColor_rad,
+    RBTreeNodeColor_black
+} RBTreeNodeColor;
 
-typedef struct Node
+typedef struct RBTreeNode
 {
     uint8_t *key;
 
     uint8_t *value;
 
-    NodeColor color;
+    RBTreeNodeColor color;
 
-    struct Node *parent;
+    struct RBTreeNode *parent;
 
-    struct Node *left;
+    struct RBTreeNode *left;
 
-    struct Node *right;
-} Node;
+    struct RBTreeNode *right;
+} RBTreeNode;
 
 typedef struct RBTree
 {
     fdsa_types id;
 
-    Node *root;
+    RBTreeNode *root;
 
-    Node *nil;
+    RBTreeNode *nil;
 
     fdsa_cmpFunc keyCmpFunc;
 
@@ -81,25 +82,25 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle, void *, void *);
 
 fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle, void *);
 
-Node *createNode(Node *nil);
+RBTreeNode *createNode(RBTreeNode *nil);
 
-void destroyNode(Node *, fdsa_freeFunc, fdsa_freeFunc);
+void destroyNode(RBTreeNode *, fdsa_freeFunc, fdsa_freeFunc);
 
-void fdsa_ptrMap_clear(RBTree *, Node *);
+void fdsa_ptrMap_clear(RBTree *, RBTreeNode *);
 
-void fdsa_ptrMap_leftRotation(RBTree *, Node *);
+void fdsa_ptrMap_leftRotation(RBTree *, RBTreeNode *);
 
-void fdsa_ptrMap_rightRotation(RBTree *, Node *);
+void fdsa_ptrMap_rightRotation(RBTree *, RBTreeNode *);
 
-Node *fdsa_ptrMap_searchNode(RBTree *, void *);
+RBTreeNode *fdsa_ptrMap_searchNode(RBTree *, void *);
 
-void fdsa_ptrMap_insertFixedUp(RBTree *, Node *);
+void fdsa_ptrMap_insertFixedUp(RBTree *, RBTreeNode *);
 
-Node *fdsa_ptrMap_nodeLeftmost(RBTree *, Node *);
+RBTreeNode *fdsa_ptrMap_nodeLeftmost(RBTree *, RBTreeNode *);
 
-Node *fdsa_ptrMap_nodeSuccessor(RBTree *, Node *);
+RBTreeNode *fdsa_ptrMap_nodeSuccessor(RBTree *, RBTreeNode *);
 
-void fdsa_ptrMap_deleteFixedUp(RBTree *, Node *);
+void fdsa_ptrMap_deleteFixedUp(RBTree *, RBTreeNode *);
 
 #ifdef __cplusplus
 }
