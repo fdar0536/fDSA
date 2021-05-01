@@ -33,12 +33,20 @@ endif (UNIX) # end if (UNIX)
 enable_testing()
 
 include(GNUInstallDirs)
-
 include(fdsa/CMakeLists.txt)
 
 option(BUILD_TESTING_CASES "Build testing cases" ON)
 
 configure_file(config.h.in config.h @ONLY)
+configure_file(
+    cmake/fdsa-config-version.cmake.in
+    fdsa-config-version.cmake
+    @ONLY
+)
+configure_file(
+    cmake/fdsa-config.cmake.in
+    fdsa-config.cmake @ONLY
+)
 
 if (BUILD_TESTING_CASES)
     include(fdsa/test/CMakeLists.txt)
