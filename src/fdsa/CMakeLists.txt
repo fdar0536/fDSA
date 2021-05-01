@@ -45,8 +45,6 @@ target_include_directories(fDSA
 set_target_properties(fDSA
     PROPERTIES
 
-    EXPORT_NAME Yutils
-
     VERSION ${PROJECT_VERSION}
 
     PUBLIC_HEADER
