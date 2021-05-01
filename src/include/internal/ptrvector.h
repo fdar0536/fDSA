@@ -23,7 +23,8 @@
 
 #pragma once
 
-#include "inttypes.h"
+#include <inttypes.h>
+#include <stddef.h>
 
 #include "defines.h"
 
