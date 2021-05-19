@@ -96,7 +96,7 @@ fdsa_exitstate fdsa_ptrMap_destroy(fdsa_handle in)
     fdsa_ptrMap_clear(tree, tree->root);
 
     // now root has been destroyed
-    destroyNode(tree->nil, tree->keyFreeFunc, tree->valueFreeFunc);
+    destroyPtrRBTreeNode(tree->nil, tree->keyFreeFunc, tree->valueFreeFunc);
     free(tree);
     return fdsa_success;
 }
@@ -150,7 +150,7 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle in, void *key, void *value)
     }
 
     // here is the just simply BST insert
-    ptrRBTreeNode *insert_node = createNode(tree->nil);
+    ptrRBTreeNode *insert_node = createPtrRBTreeNode(tree->nil);
     if (!insert_node)
     {
         return fdsa_failed;
@@ -269,7 +269,7 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
     else
     {
         // simply destroy y
-        destroyNode(y, tree->keyFreeFunc, tree->valueFreeFunc);
+        destroyPtrRBTreeNode(y, tree->keyFreeFunc, tree->valueFreeFunc);
     }
 
     if (color == ptrRBTreeNodeColor_black)
@@ -280,7 +280,7 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
     return fdsa_success;
 } // end fdsa_ptrMap_deleteNode
 
-ptrRBTreeNode *createRBTreeNode(ptrRBTreeNode *nil)
+ptrRBTreeNode *createPtrRBTreeNode(ptrRBTreeNode *nil)
 {
     if (!nil)
     {
@@ -303,9 +303,9 @@ ptrRBTreeNode *createRBTreeNode(ptrRBTreeNode *nil)
     return ret;
 }
 
-void destroyNode(ptrRBTreeNode *node,
-                 fdsa_freeFunc keyFreeFunc,
-                 fdsa_freeFunc valueFreeFunc)
+void destroyPtrRBTreeNode(ptrRBTreeNode *node,
+                          fdsa_freeFunc keyFreeFunc,
+                          fdsa_freeFunc valueFreeFunc)
 {
     if (!node)
     {
@@ -336,7 +336,7 @@ void fdsa_ptrMap_clear(ptrRBTree *tree,
 
     fdsa_ptrMap_clear(tree, in->left);
     fdsa_ptrMap_clear(tree, in->right);
-    destroyNode(in, tree->keyFreeFunc, tree->valueFreeFunc);
+    destroyPtrRBTreeNode(in, tree->keyFreeFunc, tree->valueFreeFunc);
 }
 
 void fdsa_ptrMap_leftRotation(ptrRBTree *tree, ptrRBTreeNode *x)

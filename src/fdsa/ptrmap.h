@@ -84,9 +84,9 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle, void *, void *);
 
 fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle, void *);
 
-ptrRBTreeNode *createNode(ptrRBTreeNode *nil);
+ptrRBTreeNode *createPtrRBTreeNode(ptrRBTreeNode *nil);
 
-void destroyNode(ptrRBTreeNode *, fdsa_freeFunc, fdsa_freeFunc);
+void destroyPtrRBTreeNode(ptrRBTreeNode *, fdsa_freeFunc, fdsa_freeFunc);
 
 void fdsa_ptrMap_clear(ptrRBTree *, ptrRBTreeNode *);
 

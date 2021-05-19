@@ -22,3 +22,44 @@
  */
 
 #pragma once
+
+#include "defines.h"
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+typedef struct fdsa_ptrLinkedList
+{
+    fdsa_handle (*create)(fdsa_freeFunc dataFreeFunc);
+
+    void (*clear)(fdsa_handle ptrLinkedList);
+
+    fdsa_exitstate (*pushFront)(fdsa_handle ptrLinkedList, void *data);
+
+    void *(*popFront)(fdsa_handle ptrLinkedList);
+
+    fdsa_exitstate (*pushBack)(fdsa_handle ptrLinkedList, void *data);
+
+    void *(*popBack)(fdsa_handle ptrLinkedList);
+
+    fdsa_exitstate (*insertAfter)(fdsa_handle ptrLinkedList,
+                                  fdsa_cmpFunc cmpFunc,
+                                  void *data);
+
+    fdsa_exitstate (*removeAfter)(fdsa_handle ptrLinkedList,
+                                  fdsa_cmpFunc cmpFunc);
+
+    fdsa_exitstate (*insertBefore)(fdsa_handle ptrLinkedList,
+                                   fdsa_cmpFunc cmpFunc,
+                                   void *data);
+
+    fdsa_exitstate (*removeBefore)(fdsa_handle ptrLinkedList,
+                                   fdsa_cmpFunc cmpFunc);
+
+} fdsa_ptrLinkedList;
+
+#ifdef __cplusplus
+}
+#endif

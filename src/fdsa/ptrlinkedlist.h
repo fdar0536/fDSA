@@ -33,27 +33,55 @@ extern "C"
 {
 #endif
 
-typedef struct ListNode
+typedef struct ptrLinkedListNode
 {
     uint8_t *data;
 
-    struct ListNode *priv;
+    struct ptrLinkedListNode *priv;
 
-    struct ListNode *next;
-} ListNode;
+    struct ptrLinkedListNode *next;
+} ptrLinkedListNode;
 
-typedef struct List
+typedef struct ptrLinkedList
 {
     fdsa_types id;
 
-    ListNode *root;
+    uint8_t magic[4];
+
+    ptrLinkedListNode *root;
 
     fdsa_freeFunc dataFreeFunc;
-} List;
+} ptrLinkedList;
 
 fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc);
 
-ListNode *createListNode();
+fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_handle);
+
+void fdsa_ptrLinkedList_clear(fdsa_handle);
+
+fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_handle, void *);
+
+void *fdsa_ptrLinkedList_popFront(fdsa_handle);
+
+fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_handle, void *);
+
+void *fdsa_ptrLinkedList_popBack(fdsa_handle);
+
+fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_handle,
+                                              fdsa_cmpFunc,
+                                              void *);
+
+fdsa_exitstate fdsa_ptrLinkedList_removeAfter(fdsa_handle,
+                                              fdsa_cmpFunc);
+
+fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_handle,
+                                               fdsa_cmpFunc,
+                                               void *);
+
+fdsa_exitstate fdsa_ptrLinkedList_removeBefore(fdsa_handle,
+                                               fdsa_cmpFunc);
+
+ptrLinkedListNode *createLinkedListNode();
 
 #ifdef __cplusplus
 }

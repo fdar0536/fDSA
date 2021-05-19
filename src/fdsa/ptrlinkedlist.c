@@ -24,15 +24,16 @@
 #include <stdlib.h>
 
 #include "ptrlinkedlist.h"
+#include "types.h"
 
 fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
 {
     if (!dataFreeFunc) return NULL;
 
-    List *ret = calloc(1, sizeof(List));
+    ptrLinkedList *ret = calloc(1, sizeof(ptrLinkedList));
     if (!ret) return NULL;
 
-    ret->root = createListNode();
+    ret->root = createLinkedListNode();
     if (!ret->root)
     {
         free(ret);
@@ -40,17 +41,48 @@ fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
     }
 
     ret->id = fdsa_types_ptrLinkedList;
+    ret->magic[0] = 0xf;
+    ret->magic[1] = 0xd;
+    ret->magic[2] = 's';
+    ret->magic[3] = 0xa;
+
     ret->dataFreeFunc = dataFreeFunc;
-    ListNode *root = ret->root;
+    ptrLinkedListNode *root = ret->root;
     root->priv = root;
     root->next = root;
 
     return ret;
 }
 
-ListNode *createListNode()
+fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_handle in)
 {
-    ListNode *ret = calloc(1, sizeof(ListNode));
+    if (fdsa_checkInput(in, fdsa_types_ptrLinkedList))
+    {
+        return fdsa_failed;
+    }
+
+    ptrLinkedList *list = (ptrLinkedList *)in;
+    ptrLinkedListNode *priv = list->root;
+    ptrLinkedListNode *current = priv->next;
+
+    while (current != list->root)
+    {
+        priv = current;
+        current = current->next;
+
+        list->dataFreeFunc(priv->data);
+        free(priv);
+    }
+
+    // current == list->root
+    free(current);
+    free(list);
+    return fdsa_success;
+}
+
+ptrLinkedListNode *createLinkedListNode()
+{
+    ptrLinkedListNode *ret = calloc(1, sizeof(ptrLinkedListNode));
     if (!ret) return NULL;
 
     ret->data = NULL;
