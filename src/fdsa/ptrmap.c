@@ -50,14 +50,14 @@ fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
         return NULL;
     }
 
-    RBTree *ret = calloc(1, sizeof(RBTree));
+    ptrRBTree *ret = calloc(1, sizeof(ptrRBTree));
     if (!ret)
     {
         return NULL;
     }
 
     // create nil
-    ret->nil = calloc(1, sizeof(RBTreeNode));
+    ret->nil = calloc(1, sizeof(ptrRBTreeNode));
     if (!ret->nil)
     {
         free(ret);
@@ -66,7 +66,7 @@ fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
 
     ret->nil->key = NULL;
     ret->nil->value = NULL;
-    ret->nil->color = RBTreeNodeColor_black; // nil must be black
+    ret->nil->color = ptrRBTreeNodeColor_black; // nil must be black
     ret->nil->parent = ret->nil;
     ret->nil->left = ret->nil;
     ret->nil->right = ret->nil;
@@ -92,7 +92,7 @@ fdsa_exitstate fdsa_ptrMap_destroy(fdsa_handle in)
         return fdsa_failed;
     }
 
-    RBTree *tree = (RBTree *)in;
+    ptrRBTree *tree = (ptrRBTree *)in;
     fdsa_ptrMap_clear(tree, tree->root);
 
     // now root has been destroyed
@@ -113,8 +113,8 @@ void *fdsa_ptrMap_at(fdsa_handle in, void *key)
         return NULL;
     }
 
-    RBTree *tree = (RBTree *)in;
-    RBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
+    ptrRBTree *tree = (ptrRBTree *)in;
+    ptrRBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
     if (res == tree->nil)
     {
         return NULL;
@@ -135,8 +135,8 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle in, void *key, void *value)
         return fdsa_failed;
     }
 
-    RBTree *tree = (RBTree *)in;
-    RBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
+    ptrRBTree *tree = (ptrRBTree *)in;
+    ptrRBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
     if (res != tree->nil)
     {
         // entry is already exist
@@ -150,7 +150,7 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle in, void *key, void *value)
     }
 
     // here is the just simply BST insert
-    RBTreeNode *insert_node = createNode(tree->nil);
+    ptrRBTreeNode *insert_node = createNode(tree->nil);
     if (!insert_node)
     {
         return fdsa_failed;
@@ -159,8 +159,8 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle in, void *key, void *value)
     insert_node->key = key;
     insert_node->value = value;
 
-    RBTreeNode *y = tree->nil;
-    RBTreeNode *x = tree->root;
+    ptrRBTreeNode *y = tree->nil;
+    ptrRBTreeNode *x = tree->root;
 
     while (x != tree->nil)
     {
@@ -206,16 +206,16 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
         return fdsa_failed;
     }
 
-    RBTree *tree = (RBTree *)in;
+    ptrRBTree *tree = (ptrRBTree *)in;
 
-    RBTreeNode *delete_node = fdsa_ptrMap_searchNode(tree, key);
+    ptrRBTreeNode *delete_node = fdsa_ptrMap_searchNode(tree, key);
     if (delete_node == tree->nil)
     {
         return fdsa_failed;
     }
 
-    RBTreeNode *y = NULL; // to be deleted
-    RBTreeNode *x = NULL; // y's child
+    ptrRBTreeNode *y = NULL; // to be deleted
+    ptrRBTreeNode *x = NULL; // y's child
 
     if (delete_node->left == tree->nil || delete_node->right == tree->nil)
     {
@@ -254,7 +254,7 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
     }
 
     // for case3
-    RBTreeNodeColor color = y->color;
+    ptrRBTreeNodeColor color = y->color;
     if (y != delete_node)
     {
         // note that delete_node is not nil
@@ -272,7 +272,7 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
         destroyNode(y, tree->keyFreeFunc, tree->valueFreeFunc);
     }
 
-    if (color == RBTreeNodeColor_black)
+    if (color == ptrRBTreeNodeColor_black)
     {
         fdsa_ptrMap_deleteFixedUp(tree, x);
     }
@@ -280,14 +280,14 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
     return fdsa_success;
 } // end fdsa_ptrMap_deleteNode
 
-RBTreeNode *createRBTreeNode(RBTreeNode *nil)
+ptrRBTreeNode *createRBTreeNode(ptrRBTreeNode *nil)
 {
     if (!nil)
     {
         return NULL;
     }
 
-    RBTreeNode *ret = calloc(1, sizeof(RBTreeNode));
+    ptrRBTreeNode *ret = calloc(1, sizeof(ptrRBTreeNode));
     if (!ret)
     {
         return NULL;
@@ -295,7 +295,7 @@ RBTreeNode *createRBTreeNode(RBTreeNode *nil)
 
     ret->key = NULL;
     ret->value = NULL;
-    ret->color = RBTreeNodeColor_rad; // the default new node is rad
+    ret->color = ptrRBTreeNodeColor_rad; // the default new node is rad
     ret->parent = nil;
     ret->left = nil;
     ret->right = nil;
@@ -303,7 +303,7 @@ RBTreeNode *createRBTreeNode(RBTreeNode *nil)
     return ret;
 }
 
-void destroyNode(RBTreeNode *node,
+void destroyNode(ptrRBTreeNode *node,
                  fdsa_freeFunc keyFreeFunc,
                  fdsa_freeFunc valueFreeFunc)
 {
@@ -325,8 +325,8 @@ void destroyNode(RBTreeNode *node,
     free(node);
 }
 
-void fdsa_ptrMap_clear(RBTree *tree,
-                       RBTreeNode *in)
+void fdsa_ptrMap_clear(ptrRBTree *tree,
+                       ptrRBTreeNode *in)
 {
     // use LRV traversal to clean up
     if (in == tree->nil)
@@ -339,9 +339,9 @@ void fdsa_ptrMap_clear(RBTree *tree,
     destroyNode(in, tree->keyFreeFunc, tree->valueFreeFunc);
 }
 
-void fdsa_ptrMap_leftRotation(RBTree *tree, RBTreeNode *x)
+void fdsa_ptrMap_leftRotation(ptrRBTree *tree, ptrRBTreeNode *x)
 {
-    RBTreeNode *y = x->right;
+    ptrRBTreeNode *y = x->right;
 
     x->right = y->left;
 
@@ -369,9 +369,9 @@ void fdsa_ptrMap_leftRotation(RBTree *tree, RBTreeNode *x)
     x->parent = y;
 }
 
-void fdsa_ptrMap_rightRotation(RBTree *tree, RBTreeNode *y)
+void fdsa_ptrMap_rightRotation(ptrRBTree *tree, ptrRBTreeNode *y)
 {
-    RBTreeNode *x = y->left;
+    ptrRBTreeNode *x = y->left;
 
     y->left = x->right;
     if (x->right != tree->nil)
@@ -398,9 +398,9 @@ void fdsa_ptrMap_rightRotation(RBTree *tree, RBTreeNode *y)
     y->parent = x;
 }
 
-RBTreeNode *fdsa_ptrMap_searchNode(RBTree *tree, void *key)
+ptrRBTreeNode *fdsa_ptrMap_searchNode(ptrRBTree *tree, void *key)
 {
-    RBTreeNode *current = tree->root;
+    ptrRBTreeNode *current = tree->root;
     int res;
     while (current != tree->nil)
     {
@@ -422,23 +422,23 @@ RBTreeNode *fdsa_ptrMap_searchNode(RBTree *tree, void *key)
     return current;
 } // end fdsa_ptrMap_searchNode
 
-void fdsa_ptrMap_insertFixedUp(RBTree *tree, RBTreeNode *current)
+void fdsa_ptrMap_insertFixedUp(ptrRBTree *tree, ptrRBTreeNode *current)
 {
     // case0: the parent is black, so no need to enter the loop
     // in the other word
     // if the parent is rad, need to enter the loop
-    while (current->parent->color == RBTreeNodeColor_rad)
+    while (current->parent->color == ptrRBTreeNodeColor_rad)
     {
         // the parent is the grandparent's left
         if (current->parent == current->parent->parent->left)
         {
-            RBTreeNode *uncle = current->parent->parent->right;
+            ptrRBTreeNode *uncle = current->parent->parent->right;
             // case1: uncle is rad
-            if (uncle->color == RBTreeNodeColor_rad)
+            if (uncle->color == ptrRBTreeNodeColor_rad)
             {
-                current->parent->color = RBTreeNodeColor_black;
-                uncle->color = RBTreeNodeColor_black;
-                current->parent->parent->color = RBTreeNodeColor_rad;
+                current->parent->color = ptrRBTreeNodeColor_black;
+                uncle->color = ptrRBTreeNodeColor_black;
+                current->parent->parent->color = ptrRBTreeNodeColor_rad;
                 current = current->parent->parent;
             }
             // case2 & 3: uncle is black
@@ -451,21 +451,21 @@ void fdsa_ptrMap_insertFixedUp(RBTree *tree, RBTreeNode *current)
                 }
 
                 // case3
-                current->parent->color = RBTreeNodeColor_black;
-                current->parent->parent->color = RBTreeNodeColor_rad;
+                current->parent->color = ptrRBTreeNodeColor_black;
+                current->parent->parent->color = ptrRBTreeNodeColor_rad;
                 fdsa_ptrMap_rightRotation(tree, current->parent->parent);
             }
         }
         // the parent is the grandparent's right
         else
         {
-            RBTreeNode *uncle = current->parent->parent->left;
+            ptrRBTreeNode *uncle = current->parent->parent->left;
             // case1: uncle is rad
-            if (uncle->color == RBTreeNodeColor_rad)
+            if (uncle->color == ptrRBTreeNodeColor_rad)
             {
-                current->parent->color = RBTreeNodeColor_black;
-                uncle->color = RBTreeNodeColor_black;
-                current->parent->parent->color = RBTreeNodeColor_rad;
+                current->parent->color = ptrRBTreeNodeColor_black;
+                uncle->color = ptrRBTreeNodeColor_black;
+                current->parent->parent->color = ptrRBTreeNodeColor_rad;
                 current = current->parent->parent;
             }
             // case2 & 3: uncle is black
@@ -478,17 +478,17 @@ void fdsa_ptrMap_insertFixedUp(RBTree *tree, RBTreeNode *current)
                 }
 
                 // case3
-                current->parent->color = RBTreeNodeColor_black;
-                current->parent->parent->color = RBTreeNodeColor_rad;
+                current->parent->color = ptrRBTreeNodeColor_black;
+                current->parent->parent->color = ptrRBTreeNodeColor_rad;
                 fdsa_ptrMap_leftRotation(tree, current->parent->parent);
             }
         }
     } // end while (current->parent->color == rad)
 
-    tree->root->color = RBTreeNodeColor_black; // insure root is black
+    tree->root->color = ptrRBTreeNodeColor_black; // insure root is black
 } // end fdsa_ptrMap_insertFixedUp
 
-RBTreeNode *fdsa_ptrMap_nodeLeftmost(RBTree *tree, RBTreeNode *current)
+ptrRBTreeNode *fdsa_ptrMap_nodeLeftmost(ptrRBTree *tree, ptrRBTreeNode *current)
 {
     while (current->left != tree->nil)
     {
@@ -498,14 +498,14 @@ RBTreeNode *fdsa_ptrMap_nodeLeftmost(RBTree *tree, RBTreeNode *current)
     return current;
 }
 
-RBTreeNode *fdsa_ptrMap_nodeSuccessor(RBTree *tree, RBTreeNode *current)
+ptrRBTreeNode *fdsa_ptrMap_nodeSuccessor(ptrRBTree *tree, ptrRBTreeNode *current)
 {
     if (current->right != tree->nil)
     {
         return fdsa_ptrMap_nodeLeftmost(tree, current->right);
     }
 
-    RBTreeNode *new_node = current->parent;
+    ptrRBTreeNode *new_node = current->parent;
 
     while (new_node != tree->nil && current == new_node->right)
     {
@@ -516,31 +516,31 @@ RBTreeNode *fdsa_ptrMap_nodeSuccessor(RBTree *tree, RBTreeNode *current)
     return new_node;
 } // end fdsa_ptrMap_nodeSuccessor
 
-void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
+void fdsa_ptrMap_deleteFixedUp(ptrRBTree *tree, ptrRBTreeNode *current)
 {
     // Case0:(i) if current is rad, let is black
     //       (ii) if current is root, let it black
-    while (current != tree->root && current->color == RBTreeNodeColor_black)
+    while (current != tree->root && current->color == ptrRBTreeNodeColor_black)
     {
         // current is left
         if (current == current->parent->left)
         {
-            RBTreeNode *sibling = current->parent->right;
+            ptrRBTreeNode *sibling = current->parent->right;
             // Case1: sibling is rad
-            if (sibling->color == RBTreeNodeColor_rad)
+            if (sibling->color == ptrRBTreeNodeColor_rad)
             {
-                sibling->color = RBTreeNodeColor_black;
-                current->parent->color = RBTreeNodeColor_rad;
+                sibling->color = ptrRBTreeNodeColor_black;
+                current->parent->color = ptrRBTreeNodeColor_rad;
                 fdsa_ptrMap_leftRotation(tree, current->parent);
                 sibling = current->parent->right;
             }
 
             // Case2、3、4: sibling is black
             // Case2: both sibling's children are black
-            if (sibling->left->color == RBTreeNodeColor_black &&
-                sibling->right->color == RBTreeNodeColor_black)
+            if (sibling->left->color == ptrRBTreeNodeColor_black &&
+                sibling->right->color == ptrRBTreeNodeColor_black)
             {
-                sibling->color = RBTreeNodeColor_rad;
+                sibling->color = ptrRBTreeNodeColor_rad;
 
                 // if current becomes the root after the update,
                 // then exit the loop.
@@ -551,10 +551,10 @@ void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
             {
                 // case3: the sibling's right child is black,
                 //        the other one is rad.
-                if (sibling->right->color == RBTreeNodeColor_black)
+                if (sibling->right->color == ptrRBTreeNodeColor_black)
                 {
-                    sibling->left->color = RBTreeNodeColor_black;
-                    sibling->color = RBTreeNodeColor_rad;
+                    sibling->left->color = ptrRBTreeNodeColor_black;
+                    sibling->color = ptrRBTreeNodeColor_rad;
                     fdsa_ptrMap_rightRotation(tree, sibling);
                     sibling = current->parent->right;
                 }
@@ -563,8 +563,8 @@ void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
                 // case4: the sibling's right child is rad,
                 //        the other one is black.
                 sibling->color = current->parent->color;
-                current->parent->color = RBTreeNodeColor_black;
-                sibling->right->color = RBTreeNodeColor_black;
+                current->parent->color = ptrRBTreeNodeColor_black;
+                sibling->right->color = ptrRBTreeNodeColor_black;
                 fdsa_ptrMap_leftRotation(tree, current->parent);
 
                 // if current becomes the root after the update,
@@ -575,22 +575,22 @@ void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
         // current is right
         else
         {
-            RBTreeNode *sibling = current->parent->left;
+            ptrRBTreeNode *sibling = current->parent->left;
             // Case1: sibling is rad
-            if (sibling->color == RBTreeNodeColor_rad)
+            if (sibling->color == ptrRBTreeNodeColor_rad)
             {
-                sibling->color = RBTreeNodeColor_black;
-                current->parent->color = RBTreeNodeColor_rad;
+                sibling->color = ptrRBTreeNodeColor_black;
+                current->parent->color = ptrRBTreeNodeColor_rad;
                 fdsa_ptrMap_rightRotation(tree, current->parent);
                 sibling = current->parent->left;
             }
 
             // Case2 3 4: sibling is black
             // Case2: both sibling's children are black
-            if (sibling->left->color == RBTreeNodeColor_black &&
-                sibling->right->color == RBTreeNodeColor_black)
+            if (sibling->left->color == ptrRBTreeNodeColor_black &&
+                sibling->right->color == ptrRBTreeNodeColor_black)
             {
-                sibling->color = RBTreeNodeColor_rad;
+                sibling->color = ptrRBTreeNodeColor_rad;
 
                 // if current becomes the root after the update,
                 // then exit the loop.
@@ -601,10 +601,10 @@ void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
             {
                 // case3: the sibling's left child is black,
                 //        the other one is rad.
-                if (sibling->left->color == RBTreeNodeColor_black)
+                if (sibling->left->color == ptrRBTreeNodeColor_black)
                 {
-                    sibling->right->color = RBTreeNodeColor_black;
-                    sibling->color = RBTreeNodeColor_rad;
+                    sibling->right->color = ptrRBTreeNodeColor_black;
+                    sibling->color = ptrRBTreeNodeColor_rad;
                     fdsa_ptrMap_leftRotation(tree, sibling);
                     sibling = current->parent->left;
                 }
@@ -613,8 +613,8 @@ void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
                 // case4: the sibling's left child is rad,
                 //        the other one is black.
                 sibling->color = current->parent->color;
-                current->parent->color = RBTreeNodeColor_black;
-                sibling->left->color = RBTreeNodeColor_black;
+                current->parent->color = ptrRBTreeNodeColor_black;
+                sibling->left->color = ptrRBTreeNodeColor_black;
                 fdsa_ptrMap_rightRotation(tree, current->parent);
 
                 // if current becomes the root after the update,
@@ -624,5 +624,5 @@ void fdsa_ptrMap_deleteFixedUp(RBTree *tree, RBTreeNode *current)
         } // end if (current == current->parent->left)
     } // end while (current != tree->root && current->color == black)
 
-    current->color = RBTreeNodeColor_black; // insure root is black
+    current->color = ptrRBTreeNodeColor_black; // insure root is black
 } // end fdsa_ptrMap_deleteFixedUp;
