@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <inttypes.h>
+
 #include "include/internal/defines.h"
 
 #ifdef __cplusplus
@@ -33,6 +35,8 @@ extern "C"
 typedef struct ID
 {
     fdsa_types id;
+
+    uint8_t magic[4];
 } ID;
 
 int fdsa_checkInput(void *, fdsa_types);

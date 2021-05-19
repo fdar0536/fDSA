@@ -28,6 +28,8 @@ typedef struct vector
 {
     fdsa_types id;
 
+    uint8_t magic[4];
+
     uint8_t **data;
 
     fdsa_freeFunc freeFunc;
@@ -72,6 +74,11 @@ fdsa_handle fdsa_ptrVector_create(fdsa_freeFunc freeFunc)
     }
 
     ret->id = fdsa_types_ptrVector;
+    ret->magic[0] = 0xf;
+    ret->magic[1] = 0xd;
+    ret->magic[2] = 's';
+    ret->magic[3] = 0xa;
+
     ret->data = NULL;
     ret->freeFunc = freeFunc;
     ret->size = 0;

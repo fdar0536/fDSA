@@ -33,6 +33,8 @@ typedef struct vector
 {
     fdsa_types id;
 
+    uint8_t magic[4];
+
     uint8_t *data;
 
     size_t sizeOfData;
@@ -77,6 +79,11 @@ fdsa_handle fdsa_vector_create(size_t sizeOfData)
     }
 
     vec->id = fdsa_types_vector;
+    vec->magic[0] = 0xf;
+    vec->magic[1] = 0xd;
+    vec->magic[2] = 's';
+    vec->magic[3] = 0xa;
+
     vec->data = NULL;
     vec->sizeOfData = sizeOfData;
     vec->size = 0;

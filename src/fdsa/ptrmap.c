@@ -72,6 +72,11 @@ fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
     ret->nil->right = ret->nil;
 
     ret->id = fdsa_types_ptrMap;
+    ret->magic[0] = 0xf;
+    ret->magic[1] = 0xd;
+    ret->magic[2] = 's';
+    ret->magic[3] = 0xa;
+
     ret->root = ret->nil;
     ret->keyCmpFunc = keyCmpFunc;
     ret->keyFreeFunc = keyFreeFunc;

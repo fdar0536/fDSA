@@ -36,5 +36,14 @@ int fdsa_checkInput(void *in, fdsa_types type)
         return 1;
     }
 
+    uint8_t *magic = id->magic;
+    if (magic[0] != 0xf ||
+        magic[1] != 0xd ||
+        magic[2] != 's' ||
+        magic[3] != 0xa)
+    {
+        return 1;
+    }
+
     return 0;
 }

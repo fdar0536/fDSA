@@ -57,6 +57,8 @@ typedef struct RBTree
 {
     fdsa_types id;
 
+    uint8_t magic[4];
+
     RBTreeNode *root;
 
     RBTreeNode *nil;
