@@ -50,7 +50,7 @@ fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *, size_t *);
 
 fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *, size_t);
 
-fdsa_exitstate fdsa_ptrVector_pushback(fdsa_ptrVector *, void *);
+fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *, void *);
 
 fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *,
                                      size_t,

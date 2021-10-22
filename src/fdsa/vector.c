@@ -51,7 +51,7 @@ fdsa_exitstate fdsa_vector_init(fdsa_vector_api *ret)
     ret->size = fdsa_vector_size;
     ret->capacity = fdsa_vector_capacity;
     ret->reserve = fdsa_vector_reserve;
-    ret->pushback = fdsa_vector_pushback;
+    ret->pushBack = fdsa_vector_pushBack;
     ret->resize = fdsa_vector_resize;
 
     return fdsa_success;
@@ -189,7 +189,7 @@ fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_pushback(fdsa_vector *vec, const void *src)
+fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vec, const void *src)
 {
     if (!vec || !src)
     {
@@ -240,7 +240,7 @@ fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
         size_t i;
         for (i = vec->size; i < amount; ++i)
         {
-            if (fdsa_vector_pushback(vec, src) == fdsa_failed)
+            if (fdsa_vector_pushBack(vec, src) == fdsa_failed)
             {
                 fputs("fdsa_vector_resize: You should never see this line.",
                       stderr);

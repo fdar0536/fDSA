@@ -40,9 +40,6 @@ Testing *createTesting()
         return NULL;
     }
 
-    ret->a = 0;
-    ret->b = 0;
-
     return ret;
 }
 
@@ -144,7 +141,7 @@ int main()
         return 1;
     }
 
-    if (vecApi->pushback(vec, data) == fdsa_failed)
+    if (vecApi->pushBack(vec, data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
@@ -169,7 +166,7 @@ int main()
 
     data->a = 1;
     data->b = 2;
-    if (vecApi->pushback(vec, data) == fdsa_failed)
+    if (vecApi->pushBack(vec, data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
@@ -194,7 +191,7 @@ int main()
 
     data->a = 2;
     data->b = 3;
-    if (vecApi->pushback(vec, data) == fdsa_failed)
+    if (vecApi->pushBack(vec, data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
@@ -207,7 +204,6 @@ int main()
 
     if (dumpData(vecApi, vec) == fdsa_failed)
     {
-        fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
         {
             fputs("Fail to destory vector.\n", stderr);

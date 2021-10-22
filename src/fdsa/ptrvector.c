@@ -46,7 +46,7 @@ fdsa_exitstate fdsa_ptrVector_init(fdsa_ptrVector_api *ret)
     ret->size = fdsa_ptrVector_size;
     ret->capacity = fdsa_ptrVector_capacity;
     ret->reserve = fdsa_ptrVector_reserve;
-    ret->pushback = fdsa_ptrVector_pushback;
+    ret->pushBack = fdsa_ptrVector_pushBack;
     ret->resize = fdsa_ptrVector_resize;
 
     return fdsa_success;
@@ -200,7 +200,7 @@ fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_pushback(fdsa_ptrVector *vec, void *src)
+fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *vec, void *src)
 {
     if (!vec)
     {
@@ -267,7 +267,7 @@ fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
                 return fdsa_failed;
             }
 
-            if (fdsa_ptrVector_pushback(vec, toBeInsert) == fdsa_failed)
+            if (fdsa_ptrVector_pushBack(vec, toBeInsert) == fdsa_failed)
             {
                 return fdsa_failed;
             }

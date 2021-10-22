@@ -81,7 +81,7 @@ int main()
     };
 
     int data = 1;
-    if (vecApi->pushback(vec, &data) == fdsa_failed)
+    if (vecApi->pushBack(vec, &data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
@@ -93,7 +93,7 @@ int main()
     }
 
     data = 2;
-    if (vecApi->pushback(vec, &data) == fdsa_failed)
+    if (vecApi->pushBack(vec, &data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
@@ -105,7 +105,7 @@ int main()
     }
 
     data = 3;
-    if (vecApi->pushback(vec, &data) == fdsa_failed)
+    if (vecApi->pushBack(vec, &data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
@@ -118,7 +118,6 @@ int main()
 
     if (dumpData(vecApi, vec) == fdsa_failed)
     {
-        fputs("Fail to pushback.", stderr);
         if (vecApi->destory(vec) == fdsa_failed)
         {
             fputs("Fail to destory vector.\n", stderr);

@@ -41,9 +41,6 @@ Testing *createTesting()
         return NULL;
     }
 
-    ret->a = 0;
-    ret->b = 0;
-
     return ret;
 }
 

@@ -54,7 +54,7 @@ typedef struct fdsa_vector_api
 
     fdsa_exitstate (*reserve)(fdsa_vector *vector, size_t newSize);
 
-    fdsa_exitstate (*pushback)(fdsa_vector *vector, const void *src);
+    fdsa_exitstate (*pushBack)(fdsa_vector *vector, const void *src);
 
     fdsa_exitstate (*resize)(fdsa_vector *vector,
                              size_t newSize,
