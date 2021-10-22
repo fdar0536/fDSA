@@ -25,6 +25,7 @@
 
 #include "include/fdsa.h"
 #include "fdsa.h"
+#include "ptrlinkedlist.h"
 #include "ptrmap.h"
 #include "ptrvector.h"
 #include "vector.h"
@@ -32,6 +33,11 @@
 FDSA_API fdsa_exitstate fdsa_init(fDSA *ret)
 {
     if (!ret)
+    {
+        return fdsa_failed;
+    }
+
+    if (fdsa_ptrLinkedList_init(&ret->ptrLinkedList) == fdsa_failed)
     {
         return fdsa_failed;
     }

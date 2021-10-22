@@ -30,37 +30,51 @@ extern "C"
 {
 #endif
 
+typedef struct fdsa_ptrLinkedListNode
+{
+    void *data;
+} fdsa_ptrLinkedListNode;
+
 typedef struct fdsa_ptrLinkedList fdsa_ptrLinkedList;
 
-typedef struct fdsa_ptrLinkedList_API
+typedef struct fdsa_ptrLinkedList_api
 {
-    fdsa_handle (*create)(fdsa_freeFunc dataFreeFunc);
+    fdsa_ptrLinkedList *(*create)(fdsa_freeFunc dataFreeFunc);
 
-    void (*clear)(fdsa_handle ptrLinkedList);
+    fdsa_exitstate (*destory)(fdsa_ptrLinkedList *ptrLinkedList);
 
-    fdsa_exitstate (*pushFront)(fdsa_handle ptrLinkedList, void *data);
+    void (*clear)(fdsa_ptrLinkedList *ptrLinkedList);
 
-    void *(*popFront)(fdsa_handle ptrLinkedList);
+    fdsa_exitstate (*pushFront)(fdsa_ptrLinkedList *ptrLinkedList, void *data);
 
-    fdsa_exitstate (*pushBack)(fdsa_handle ptrLinkedList, void *data);
+    void *(*popFront)(fdsa_ptrLinkedList *ptrLinkedList);
 
-    void *(*popBack)(fdsa_handle ptrLinkedList);
+    fdsa_exitstate (*pushBack)(fdsa_ptrLinkedList *ptrLinkedList, void *data);
 
-    fdsa_exitstate (*insertAfter)(fdsa_handle ptrLinkedList,
-                                  fdsa_cmpFunc cmpFunc,
+    void *(*popBack)(fdsa_ptrLinkedList *ptrLinkedList);
+
+    fdsa_exitstate (*insertAfter)(fdsa_ptrLinkedList *ptrLinkedList,
+                                  fdsa_ptrLinkedListNode *node,
                                   void *data);
 
-    fdsa_exitstate (*removeAfter)(fdsa_handle ptrLinkedList,
-                                  fdsa_cmpFunc cmpFunc);
-
-    fdsa_exitstate (*insertBefore)(fdsa_handle ptrLinkedList,
-                                   fdsa_cmpFunc cmpFunc,
+    fdsa_exitstate (*insertBefore)(fdsa_ptrLinkedList *ptrLinkedList,
+                                   fdsa_ptrLinkedListNode *node,
                                    void *data);
 
-    fdsa_exitstate (*removeBefore)(fdsa_handle ptrLinkedList,
-                                   fdsa_cmpFunc cmpFunc);
+    fdsa_exitstate (*remove)(fdsa_ptrLinkedList *ptrLinkedList,
+                             fdsa_ptrLinkedListNode *node);
 
-} fdsa_ptrLinkedList_API;
+    fdsa_ptrLinkedListNode *(*first)(fdsa_ptrLinkedList *ptrLinkedList);
+
+    fdsa_ptrLinkedListNode *(*last)(fdsa_ptrLinkedList *ptrLinkedList);
+
+    fdsa_ptrLinkedListNode *(*next)(fdsa_ptrLinkedList *ptrLinkedList,
+                                    fdsa_ptrLinkedListNode *node);
+
+    fdsa_ptrLinkedListNode *(*priv)(fdsa_ptrLinkedList *ptrLinkedList,
+                                    fdsa_ptrLinkedListNode *node);
+
+} fdsa_ptrLinkedList_api;
 
 #ifdef __cplusplus
 }

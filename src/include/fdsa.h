@@ -24,7 +24,7 @@
 #pragma once
 
 #include "internal/defines.h"
-// #include "internal/ptrlinkedlist.h"
+#include "internal/ptrlinkedlist.h"
 #include "internal/ptrmap.h"
 #include "internal/ptrvector.h"
 #include "internal/vector.h"
@@ -51,6 +51,7 @@ extern "C"
  */
 typedef struct fDSA
 {
+    fdsa_ptrLinkedList_api ptrLinkedList;
 
     fdsa_ptrMap_api ptrMap;
 

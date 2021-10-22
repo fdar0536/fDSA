@@ -24,12 +24,31 @@
 #include <stdlib.h>
 
 #include "ptrlinkedlist.h"
-#include "types.h"
+
+fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *ret)
+{
+    if (!ret) return fdsa_failed;
+
+    ret->create = fdsa_ptrLinkedList_create;
+    ret->destory = fdsa_ptrLinkedList_destory;
+    ret->clear = fdsa_ptrLinkedList_clear;
+    ret->pushFront = fdsa_ptrLinkedList_pushFront;
+    ret->popFront = fdsa_ptrLinkedList_popFront;
+    ret->pushBack = fdsa_ptrLinkedList_pushBack;
+    ret->popBack = fdsa_ptrLinkedList_popBack;
+    ret->insertAfter = fdsa_ptrLinkedList_insertAfter;
+    ret->insertBefore = fdsa_ptrLinkedList_insertBefore;
+    ret->remove = fdsa_ptrLinkedList_remove;
+    ret->first = fdsa_ptrLinkedList_first;
+    ret->last = fdsa_ptrLinkedList_last;
+    ret->next = fdsa_ptrLinkedList_next;
+    ret->priv = fdsa_ptrLinkedList_priv;
+
+    return fdsa_success;
+}
 
 fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
 {
-    if (!dataFreeFunc) return NULL;
-
     fdsa_ptrLinkedList *ret = calloc(1, sizeof(fdsa_ptrLinkedList));
     if (!ret) return NULL;
 
@@ -50,7 +69,18 @@ fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
 
 fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
 {
-    if (!list) return fdsa_failed;
+    fdsa_ptrLinkedList_clear(list);
+
+    // clean up root and object.
+    free(list->root);
+    free(list);
+
+    return fdsa_success;
+}
+
+void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *list)
+{
+    if (!list) return;
 
     ptrLinkedListNode *priv = list->root;
     ptrLinkedListNode *current = priv->next;
@@ -60,14 +90,13 @@ fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
         priv = current;
         current = current->next;
 
-        list->dataFreeFunc(priv->data);
+        if (list->dataFreeFunc) list->dataFreeFunc(priv->data);
         free(priv);
     }
 
     // current == list->root
-    free(current);
-    free(list);
-    return fdsa_success;
+    current->next = current;
+    current->priv = current;
 }
 
 fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *list, void *data)
@@ -172,10 +201,10 @@ void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *list)
 }
 
 fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *list,
-                                              fdsa_cmpFunc cmpFunc,
+                                              fdsa_ptrLinkedListNode *ref,
                                               void *data)
 {
-    if (!list || !cmpFunc) return fdsa_failed;
+    if (!list || !ref) return fdsa_failed;
 
     ptrLinkedListNode *toBeInserted = createPtrLinkedListNode();
     if (!toBeInserted) return fdsa_failed;
@@ -192,41 +221,59 @@ fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *list,
     }
     else
     {
-        ptrLinkedListNode *current = root->next;
+        ptrLinkedListNode *current = (void *)ref;
         ptrLinkedListNode *next = current->next;
-        uint8_t *currentData = NULL, *nextData = NULL;
 
-        while (next != root)
-        {
-            currentData = current->data;
-            nextData = next->data;
-            if (!cmpFunc(currentData, nextData))
-            {
-                goto process;
-            }
-
-            current = next;
-            next = next->next;
-        }
-
-process:
         current->next = toBeInserted;
 
         toBeInserted->priv = current;
         toBeInserted->next = next;
 
         next->priv = toBeInserted;
-
-        if (next == root) return fdsa_successWithWarning;
     }
 
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_removeAfter(fdsa_ptrLinkedList *list,
-                                              fdsa_cmpFunc cmpFunc)
+fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *list,
+                                               fdsa_ptrLinkedListNode *ref,
+                                               void *data)
 {
-    if (!cmpFunc || !list) return fdsa_failed;
+    if (!list || !ref) return fdsa_failed;
+
+    ptrLinkedListNode *toBeInserted = createPtrLinkedListNode();
+    if (!toBeInserted) return fdsa_failed;
+    toBeInserted->data = data;
+
+    ptrLinkedListNode *root = list->root;
+    if (root->next == root)
+    {
+        // list is empty
+        root->next = toBeInserted;
+        root->priv = toBeInserted;
+        toBeInserted->next = root;
+        toBeInserted->priv = root;
+    }
+    else
+    {
+        ptrLinkedListNode *current = (void *)ref;
+        ptrLinkedListNode *priv = current->priv;
+
+        current->priv = toBeInserted;
+
+        toBeInserted->priv = priv;
+        toBeInserted->next = current;
+
+        priv->next = toBeInserted;
+    }
+
+    return fdsa_success;
+}
+
+fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
+                                         fdsa_ptrLinkedListNode *ref)
+{
+    if (!list || !ref) return fdsa_failed;
 
     ptrLinkedListNode *root = list->root;
     if (root->next == root)
@@ -235,31 +282,79 @@ fdsa_exitstate fdsa_ptrLinkedList_removeAfter(fdsa_ptrLinkedList *list,
         return fdsa_failed;
     }
 
-    ptrLinkedListNode *current = root->next;
-    ptrLinkedListNode *next = current->next;
-    uint8_t *currentData = NULL, *nextData = NULL;
-    while (next != root)
-    {
-        currentData = current->data;
-        nextData = next->data;
-        if (!cmpFunc(currentData, nextData))
-        {
-            goto process;
-        }
+    ptrLinkedListNode *toBeRemoved = (void *)ref;
+    if (toBeRemoved == root) return fdsa_failed;
 
-        current = next;
-        next = next->next;
-    }
+    ptrLinkedListNode *priv = toBeRemoved->priv;
+    ptrLinkedListNode *next = toBeRemoved->next;
 
-    // next == root
+    priv->next = next;
+    next->priv = priv;
+
+    // clean up
+    if (list->dataFreeFunc) list->dataFreeFunc(toBeRemoved->data);
+    free(toBeRemoved);
+
+    return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_handle,
-                                               fdsa_cmpFunc,
-                                               void *);
+fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_first(fdsa_ptrLinkedList *list)
+{
+    if (!list) return NULL;
 
-fdsa_exitstate fdsa_ptrLinkedList_removeBefore(fdsa_handle,
-                                               fdsa_cmpFunc);
+    if (list->root->next == list->root)
+    {
+        // list is empty
+        return NULL;
+    }
+
+    return (void *)list->root->next;
+}
+
+fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_last(fdsa_ptrLinkedList *list)
+{
+    if (!list) return NULL;
+
+    if (list->root->next == list->root)
+    {
+        // list is empty
+        return NULL;
+    }
+
+    return (void *)list->root->priv;
+}
+
+fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(fdsa_ptrLinkedList *list,
+                                                fdsa_ptrLinkedListNode *ref)
+{
+    if (!list || !ref) return NULL;
+
+    if (list->root->next == list->root)
+    {
+        // list is empty
+        return NULL;
+    }
+
+    ptrLinkedListNode *node = (void *)ref;
+    if (node->next == list->root) return NULL;
+    return (void *)node->next;
+}
+
+fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_priv(fdsa_ptrLinkedList *list,
+                                                fdsa_ptrLinkedListNode *ref)
+{
+    if (!list || !ref) return NULL;
+
+    if (list->root->next == list->root)
+    {
+        // list is empty
+        return NULL;
+    }
+
+    ptrLinkedListNode *node = (void *)ref;
+    if (node->priv == list->root) return NULL;
+    return (void *)node->priv;
+}
 
 ptrLinkedListNode *createPtrLinkedListNode()
 {
