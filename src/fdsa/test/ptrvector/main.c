@@ -76,7 +76,7 @@ void *deepCopyTesting(void *in)
     return res;
 }
 
-fdsa_exitstate dumpData(fdsa_ptrVector *vecApi, fdsa_handle vec)
+fdsa_exitstate dumpData(fdsa_ptrVector_api *vecApi, fdsa_ptrVector *vec)
 {
     size_t size = 0;
     if (vecApi->size(vec, &size) == fdsa_failed)
@@ -105,32 +105,30 @@ fdsa_exitstate dumpData(fdsa_ptrVector *vecApi, fdsa_handle vec)
 
 int main()
 {
-    fDSA *api = fdsa_init();
-    if (!api)
+    fDSA api;
+    if (fdsa_init(&api) == fdsa_failed)
     {
         fputs("Fail to create api entry.\n", stderr);
         return 1;
     }
 
-    fdsa_ptrVector *vecApi = api->ptrVector;
+    fdsa_ptrVector_api *vecApi = &api.ptrVector;
 
-    fdsa_handle vec = vecApi->create(freeTesting);
+    fdsa_ptrVector *vec = vecApi->create(freeTesting);
     if (!vec)
     {
         fputs("Fail to create vector.\n", stderr);
-        fdsa_destroy(api);
         return 1;
     }
 
     if (vecApi->reserve(vec, 3) == fdsa_failed)
     {
         fputs("Fail to reserve.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     };
 
@@ -138,24 +136,22 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (vecApi->pushback(vec, data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -163,12 +159,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -177,12 +172,11 @@ int main()
     if (vecApi->pushback(vec, data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -190,12 +184,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -204,24 +197,22 @@ int main()
     if (vecApi->pushback(vec, data) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (dumpData(vecApi, vec) == fdsa_failed)
     {
         fputs("Fail to pushback.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -229,12 +220,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -243,20 +233,19 @@ int main()
     if (vecApi->setValue(vec, 0, data) == fdsa_failed)
     {
         fputs("Fail to set value.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (dumpData(vecApi, vec) == fdsa_failed)
     {
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
         return 1;
@@ -266,12 +255,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -280,12 +268,11 @@ int main()
     if (vecApi->resize(vec, 5, data, deepCopyTesting) == fdsa_failed)
     {
         fputs("Fail to resize.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -294,12 +281,11 @@ int main()
 
     if (dumpData(vecApi, vec) == fdsa_failed)
     {
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -308,24 +294,22 @@ int main()
     if (vecApi->size(vec, &size) == fdsa_failed)
     {
         fputs("Fail to get size.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (vecApi->capacity(vec, &capacity) == fdsa_failed)
     {
         fputs("Fail to get capacity.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -338,36 +322,33 @@ int main()
     if (vecApi->clear(vec) == fdsa_failed)
     {
         fputs("Fail to clear.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (vecApi->size(vec, &size) == fdsa_failed)
     {
         fputs("Fail to get size.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (vecApi->capacity(vec, &capacity) == fdsa_failed)
     {
         fputs("Fail to get capacity.", stderr);
-        if (api->closeHandle(vec) == fdsa_failed)
+        if (vecApi->destory(vec) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory vector.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -377,15 +358,12 @@ int main()
     printf("After clear: size = %ld, capacity = %ld\n", size, capacity);
 #endif
 
-    if (api->closeHandle(vec) == fdsa_failed)
+    if (vecApi->destory(vec) == fdsa_failed)
     {
-        fputs("Fail to close handle.\n", stderr);
+        fputs("Fail to destory vector.\n", stderr);
 
-        fdsa_destroy(api);
         return 1;
     }
-
-    fdsa_destroy(api);
 
     return 0;
 }

@@ -30,10 +30,6 @@ extern "C"
 {
 #endif
 
-fdsa_exitstate fdsa_getHandleType(fdsa_handle, fdsa_types *dst);
-
-fdsa_exitstate fdsa_closeHandle(fdsa_handle);
-
 const char *fdsa_version();
 
 #ifdef __cplusplus

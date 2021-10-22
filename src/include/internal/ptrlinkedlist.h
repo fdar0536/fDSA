@@ -30,7 +30,9 @@ extern "C"
 {
 #endif
 
-typedef struct fdsa_ptrLinkedList
+typedef struct fdsa_ptrLinkedList fdsa_ptrLinkedList;
+
+typedef struct fdsa_ptrLinkedList_API
 {
     fdsa_handle (*create)(fdsa_freeFunc dataFreeFunc);
 
@@ -58,7 +60,7 @@ typedef struct fdsa_ptrLinkedList
     fdsa_exitstate (*removeBefore)(fdsa_handle ptrLinkedList,
                                    fdsa_cmpFunc cmpFunc);
 
-} fdsa_ptrLinkedList;
+} fdsa_ptrLinkedList_API;
 
 #ifdef __cplusplus
 }

@@ -1,6 +1,6 @@
 set(fdsa_public_headers
     include/internal/defines.h
-    include/internal/ptrlinkedlist.h
+    # include/internal/ptrlinkedlist.h
     include/internal/ptrmap.h
     include/internal/ptrvector.h
     include/internal/vector.h
@@ -9,10 +9,9 @@ set(fdsa_public_headers
 
 set(fdsa_priv_headers
     fdsa/fdsa.h
-    fdsa/ptrlinkedlist.h
+    # fdsa/ptrlinkedlist.h
     fdsa/ptrmap.h
     fdsa/ptrvector.h
-    fdsa/types.h
     fdsa/vector.h
 
     ${CMAKE_BINARY_DIR}/config.h
@@ -21,10 +20,9 @@ set(fdsa_priv_headers
 set(fdsa_src
     fdsa/fdsa.c
     fdsa/init.c
-    fdsa/ptrlinkedlist.c
+    # fdsa/ptrlinkedlist.c
     fdsa/ptrmap.c
     fdsa/ptrvector.c
-    fdsa/types.c
     fdsa/vector.c
 )
 

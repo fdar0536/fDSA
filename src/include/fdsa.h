@@ -24,7 +24,7 @@
 #pragma once
 
 #include "internal/defines.h"
-#include "internal/ptrlinkedlist.h"
+// #include "internal/ptrlinkedlist.h"
 #include "internal/ptrmap.h"
 #include "internal/ptrvector.h"
 #include "internal/vector.h"
@@ -52,26 +52,11 @@ extern "C"
 typedef struct fDSA
 {
 
-    fdsa_ptrMap *ptrMap;
+    fdsa_ptrMap_api ptrMap;
 
-    fdsa_ptrVector *ptrVector;
+    fdsa_ptrVector_api ptrVector;
 
-    fdsa_vector *vector;
-
-    /**
-     * Get object's type id.
-     * @param handle the object pointer return from fdsa APIs
-     * @param dst the pointer for store result
-     * @return please refer to fdsa_exitstate
-     */
-    fdsa_exitstate (*getHandleType)(fdsa_handle handle, fdsa_types *dst);
-
-    /**
-     * free the fdsa_handle
-     * @param handle the object pointer return from fdsa APIs
-     * @return please refer to fdsa_exitstate
-     */
-    fdsa_exitstate (*closeHandle)(fdsa_handle handle);
+    fdsa_vector_api vector;
 
     /**
      * @return it returns fdsa API's version.
@@ -80,14 +65,9 @@ typedef struct fDSA
 } fDSA;
 
 /**
- * Initialize fdsa APIs. If fail, it will return NULL.
+ * Initialize fdsa APIs.
  */
-FDSA_API fDSA *fdsa_init();
-
-/**
- * Destroy fdsa APIs' entries.
- */
-FDSA_API void fdsa_destroy(fDSA *);
+FDSA_API fdsa_exitstate fdsa_init(fDSA *);
 
 #ifdef __cplusplus
 }

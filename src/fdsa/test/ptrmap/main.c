@@ -76,7 +76,7 @@ int cmpKey(const void *lhs, const void *rhs)
     return strcmp(lhs, rhs);
 }
 
-void dumpData(fdsa_ptrMap *mapApi, fdsa_handle map, void *key)
+void dumpData(fdsa_ptrMap_api *mapApi, fdsa_ptrMap *map, void *key)
 {
     Testing *res = mapApi->at(map, key);
     if (res)
@@ -91,19 +91,18 @@ void dumpData(fdsa_ptrMap *mapApi, fdsa_handle map, void *key)
 
 int main()
 {
-    fDSA *api = fdsa_init();
-    if (!api)
+    fDSA api;
+    if (fdsa_init(&api) == fdsa_failed)
     {
         fputs("Fail to create api entry.\n", stderr);
         return 1;
     }
 
-    fdsa_ptrMap *mapApi = api->ptrMap;
-    fdsa_handle map = mapApi->create(cmpKey, NULL, freeTesting);
+    fdsa_ptrMap_api *mapApi = &api.ptrMap;
+    fdsa_ptrMap *map = mapApi->create(cmpKey, NULL, freeTesting);
     if (!map)
     {
         fputs("Fail to create map.\n", stderr);
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -111,24 +110,22 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
     if (mapApi->insertNode(map, "123", data) == fdsa_failed)
     {
         fputs("Fail to insert node.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     };
 
@@ -136,12 +133,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -150,12 +146,11 @@ int main()
     if (mapApi->insertNode(map, "456", data) == fdsa_failed)
     {
         fputs("Fail to insert node.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     };
 
@@ -163,12 +158,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -177,12 +171,11 @@ int main()
     if (mapApi->insertNode(map, "789", data) == fdsa_failed)
     {
         fputs("Fail to insert node.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     };
 
@@ -196,12 +189,11 @@ int main()
     if (!data)
     {
         fputs("Fail to allocate memory.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -210,24 +202,22 @@ int main()
     if (mapApi->insertNode(map, "123", data) == fdsa_failed)
     {
         fputs("Fail to replace node.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     };
 
     if (mapApi->deleteNode(map, "456") == fdsa_failed)
     {
         fputs("Fail to delete node.", stderr);
-        if (api->closeHandle(map) == fdsa_failed)
+        if (mapApi->destory(map) == fdsa_failed)
         {
-            fputs("Fail to close handle.\n", stderr);
+            fputs("Fail to destory map.\n", stderr);
         }
 
-        fdsa_destroy(api);
         return 1;
     }
 
@@ -237,15 +227,11 @@ int main()
     dumpData(mapApi, map, "012");
     printf("\n");
 
-    if (api->closeHandle(map) == fdsa_failed)
+    if (mapApi->destory(map) == fdsa_failed)
     {
-        fputs("Fail to close handle.\n", stderr);
-
-        fdsa_destroy(api);
+        fputs("Fail to destory map.\n", stderr);
         return 1;
     }
-
-    fdsa_destroy(api);
 
     return 0;
 }

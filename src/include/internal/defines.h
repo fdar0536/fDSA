@@ -39,18 +39,6 @@ typedef enum fdsa_exitstate
 } fdsa_exitstate;
 
 /**
- * @enum fdsa_types
- * The type ID for fdsa_handle
- */
-typedef enum fdsa_types
-{
-    fdsa_types_ptrLinkedList,
-    fdsa_types_ptrMap, /**< map of pointer */
-    fdsa_types_ptrVector, /**< vector of pointer */
-    fdsa_types_vector, /**< vector */
-} fdsa_types;
-
-/**
  * @typedef fdsa_cmpFunc
  * A function for comparison
  * @param lhs
@@ -67,11 +55,6 @@ typedef int (*fdsa_cmpFunc)(const void *lhs, const void *rhs);
  * @param toBeFreed the pointer to be freed
  */
 typedef void (*fdsa_freeFunc)(void *toBeFreed);
-
-/**
- * a pointer for the object return from fdsa API.
- */
-typedef void* fdsa_handle;
 
 #ifdef __cplusplus
 }

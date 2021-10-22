@@ -26,15 +26,10 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "fdsa/types.h"
 #include "vector.h"
 
-typedef struct vector
+typedef struct fdsa_vector
 {
-    fdsa_types id;
-
-    uint8_t magic[4];
-
     uint8_t *data;
 
     size_t sizeOfData;
@@ -42,17 +37,14 @@ typedef struct vector
     size_t size;
 
     size_t capacity;
-} vector;
+} fdsa_vector;
 
-fdsa_vector *fdsa_vector_init()
+fdsa_exitstate fdsa_vector_init(fdsa_vector_api *ret)
 {
-    fdsa_vector *ret = calloc(1, sizeof(fdsa_vector));
-    if (!ret)
-    {
-        return NULL;
-    }
+    if (!ret) return fdsa_failed;
 
     ret->create = fdsa_vector_create;
+    ret->destory = fdsa_vector_destroy;
     ret->at = fdsa_vector_at;
     ret->setValue = fdsa_vector_setValue;
     ret->clear = fdsa_vector_clear;
@@ -62,44 +54,31 @@ fdsa_vector *fdsa_vector_init()
     ret->pushback = fdsa_vector_pushback;
     ret->resize = fdsa_vector_resize;
 
-    return ret;
+    return fdsa_success;
 }
 
-fdsa_handle fdsa_vector_create(size_t sizeOfData)
+fdsa_vector *fdsa_vector_create(size_t sizeOfData)
 {
     if (!sizeOfData)
     {
         return NULL;
     }
 
-    vector *vec = calloc(1, sizeof (vector));
+    fdsa_vector *vec = calloc(1, sizeof (fdsa_vector));
     if (!vec)
     {
         return NULL;
     }
 
-    vec->id = fdsa_types_vector;
-    vec->magic[0] = 0xf;
-    vec->magic[1] = 0xd;
-    vec->magic[2] = 's';
-    vec->magic[3] = 0xa;
-
-    vec->data = NULL;
     vec->sizeOfData = sizeOfData;
-    vec->size = 0;
-    vec->capacity = 0;
 
     return vec;
 }
 
-fdsa_exitstate fdsa_vector_destroy(fdsa_handle in)
+fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vec)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
-    {
-        return fdsa_failed;
-    }
+    if (!vec) return fdsa_failed;
 
-    vector *vec = (vector *)in;
     if (vec->data)
     {
         free(vec->data);
@@ -109,19 +88,14 @@ fdsa_exitstate fdsa_vector_destroy(fdsa_handle in)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_at(fdsa_handle in, size_t index, void *dst)
+fdsa_exitstate fdsa_vector_at(fdsa_vector *vec, size_t index, void *dst)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
+
+    if (!vec || !dst)
     {
         return fdsa_failed;
     }
 
-    if (!dst)
-    {
-        return fdsa_failed;
-    }
-
-    vector *vec = (vector *)in;
     if (index >= vec->size)
     {
         return fdsa_failed;
@@ -134,21 +108,15 @@ fdsa_exitstate fdsa_vector_at(fdsa_handle in, size_t index, void *dst)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_setValue(fdsa_handle in,
-                                      size_t index,
-                                      const void *src)
+fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vec,
+                                    size_t index,
+                                    const void *src)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
+    if (!vec || !src)
     {
         return fdsa_failed;
     }
 
-    if (!src)
-    {
-        return fdsa_failed;
-    }
-
-    vector *vec = (vector *)in;
     if (index >= vec->size)
     {
         return fdsa_failed;
@@ -161,62 +129,42 @@ fdsa_exitstate fdsa_vector_setValue(fdsa_handle in,
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_clear(fdsa_handle in)
+fdsa_exitstate fdsa_vector_clear(fdsa_vector *vec)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
-    {
-        return fdsa_failed;
-    }
+    if (!vec) return fdsa_failed;
 
-    vector *vec = (vector *)in;
     vec->size = 0;
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_size(fdsa_handle in, size_t *dst)
+fdsa_exitstate fdsa_vector_size(fdsa_vector *vec, size_t *dst)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
+    if (!vec || !dst)
     {
         return fdsa_failed;
     }
 
-    if (!dst)
-    {
-        return fdsa_failed;
-    }
-
-    vector *vec = (vector *)in;
     *dst = vec->size;
 
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_capacity(fdsa_handle in, size_t *dst)
+fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vec, size_t *dst)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
+    if (!vec || !dst)
     {
         return fdsa_failed;
     }
 
-    if (!dst)
-    {
-        return fdsa_failed;
-    }
-
-    vector *vec = (vector *)in;
     *dst = vec->capacity;
 
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_reserve(fdsa_handle in, size_t newSize)
+fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
-    {
-        return fdsa_failed;
-    }
+    if (!vec) return fdsa_failed;
 
-    vector *vec = (vector *)in;
     if (newSize <= vec->capacity)
     {
         // do nothing
@@ -241,19 +189,14 @@ fdsa_exitstate fdsa_vector_reserve(fdsa_handle in, size_t newSize)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_pushback(fdsa_handle in, const void *src)
+fdsa_exitstate fdsa_vector_pushback(fdsa_vector *vec, const void *src)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
+    if (!vec || !src)
     {
         return fdsa_failed;
     }
 
-    if (!src)
-    {
-        return fdsa_failed;
-    }
 
-    vector *vec = (vector *)in;
     if (vec->size == vec->capacity)
     {
         if (fdsa_vector_reserve(vec, vec->capacity + 1) == fdsa_failed)
@@ -270,24 +213,18 @@ fdsa_exitstate fdsa_vector_pushback(fdsa_handle in, const void *src)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_resize(fdsa_handle in,
-                                    size_t amount,
-                                    const void *src)
+fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
+                                  size_t amount,
+                                  const void *src)
 {
-    if (fdsa_checkInput(in, fdsa_types_vector))
+    if (!vec || !src)
     {
         return fdsa_failed;
     }
 
-    if (!src)
-    {
-        return fdsa_failed;
-    }
-
-    vector *vec = (vector *)in;
     if (vec->capacity < amount)
     {
-        if (fdsa_vector_reserve(in, amount) == fdsa_failed)
+        if (fdsa_vector_reserve(vec, amount) == fdsa_failed)
         {
             return fdsa_failed;
         }

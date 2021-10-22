@@ -29,55 +29,28 @@
 #include "ptrvector.h"
 #include "vector.h"
 
-FDSA_API fDSA *fdsa_init()
+FDSA_API fdsa_exitstate fdsa_init(fDSA *ret)
 {
-    fDSA *ret = calloc(1, sizeof(fDSA));
     if (!ret)
     {
-        return NULL;
+        return fdsa_failed;
     }
 
-    ret->ptrMap = NULL;
-    ret->ptrVector = NULL;
-    ret->vector = NULL;
-
-    ret->ptrMap = fdsa_ptrMap_init();
-    if (!ret->ptrMap)
+    if (fdsa_ptrMap_init(&ret->ptrMap) == fdsa_failed)
     {
-        fdsa_destroy(ret);
-        return NULL;
+        return fdsa_failed;
     }
 
-    ret->ptrVector = fdsa_ptrVector_init();
-    if (!ret->ptrVector)
+    if (fdsa_ptrVector_init(&ret->ptrVector) == fdsa_failed)
     {
-        fdsa_destroy(ret);
-        return NULL;
+        return fdsa_failed;
     }
 
-    ret->vector = fdsa_vector_init();
-    if (!ret->vector)
+    if (fdsa_vector_init(&ret->vector) == fdsa_failed)
     {
-        fdsa_destroy(ret);
-        return NULL;
+        return fdsa_failed;
     }
 
-    ret->getHandleType = fdsa_getHandleType;
-    ret->closeHandle = fdsa_closeHandle;
     ret->version = fdsa_version;
-    return ret;
-}
-
-FDSA_API void fdsa_destroy(fDSA *in)
-{
-    if (!in)
-    {
-        return;
-    }
-
-    if (in->ptrMap) free(in->ptrMap);
-    if (in->ptrVector) free(in->ptrVector);
-    if (in->vector) free(in->vector);
-
-    free(in);
+    return fdsa_success;
 }

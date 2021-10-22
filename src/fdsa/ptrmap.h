@@ -53,12 +53,8 @@ typedef struct ptrRBTreeNode
     struct ptrRBTreeNode *right;
 } ptrRBTreeNode;
 
-typedef struct ptrRBTree
+typedef struct fdsa_ptrMap
 {
-    fdsa_types id;
-
-    uint8_t magic[4];
-
     ptrRBTreeNode *root;
 
     ptrRBTreeNode *nil;
@@ -68,41 +64,41 @@ typedef struct ptrRBTree
     fdsa_freeFunc keyFreeFunc;
 
     fdsa_freeFunc valueFreeFunc;
-} ptrRBTree;
+} fdsa_ptrMap;
 
-fdsa_ptrMap *fdsa_ptrMap_init();
+fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *);
 
-fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc,
-                               fdsa_freeFunc,
-                               fdsa_freeFunc);
+fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc,
+                                fdsa_freeFunc,
+                                fdsa_freeFunc);
 
-fdsa_exitstate fdsa_ptrMap_destroy(fdsa_handle);
+fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *);
 
-void *fdsa_ptrMap_at(fdsa_handle, void *);
+void *fdsa_ptrMap_at(fdsa_ptrMap *, void *);
 
-fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle, void *, void *);
+fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *, void *, void *);
 
-fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle, void *);
+fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *, void *);
 
 ptrRBTreeNode *createPtrRBTreeNode(ptrRBTreeNode *nil);
 
 void destroyPtrRBTreeNode(ptrRBTreeNode *, fdsa_freeFunc, fdsa_freeFunc);
 
-void fdsa_ptrMap_clear(ptrRBTree *, ptrRBTreeNode *);
+void fdsa_ptrMap_clear(fdsa_ptrMap *, ptrRBTreeNode *);
 
-void fdsa_ptrMap_leftRotation(ptrRBTree *, ptrRBTreeNode *);
+void fdsa_ptrMap_leftRotation(fdsa_ptrMap *, ptrRBTreeNode *);
 
-void fdsa_ptrMap_rightRotation(ptrRBTree *, ptrRBTreeNode *);
+void fdsa_ptrMap_rightRotation(fdsa_ptrMap *, ptrRBTreeNode *);
 
-ptrRBTreeNode *fdsa_ptrMap_searchNode(ptrRBTree *, void *);
+ptrRBTreeNode *fdsa_ptrMap_searchNode(fdsa_ptrMap *, void *);
 
-void fdsa_ptrMap_insertFixedUp(ptrRBTree *, ptrRBTreeNode *);
+void fdsa_ptrMap_insertFixedUp(fdsa_ptrMap *, ptrRBTreeNode *);
 
-ptrRBTreeNode *fdsa_ptrMap_nodeLeftmost(ptrRBTree *, ptrRBTreeNode *);
+ptrRBTreeNode *fdsa_ptrMap_nodeLeftmost(fdsa_ptrMap *, ptrRBTreeNode *);
 
-ptrRBTreeNode *fdsa_ptrMap_nodeSuccessor(ptrRBTree *, ptrRBTreeNode *);
+ptrRBTreeNode *fdsa_ptrMap_nodeSuccessor(fdsa_ptrMap *, ptrRBTreeNode *);
 
-void fdsa_ptrMap_deleteFixedUp(ptrRBTree *, ptrRBTreeNode *);
+void fdsa_ptrMap_deleteFixedUp(fdsa_ptrMap *, ptrRBTreeNode *);
 
 #ifdef __cplusplus
 }

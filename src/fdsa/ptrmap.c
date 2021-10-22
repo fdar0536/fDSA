@@ -24,33 +24,32 @@
 #include <stdlib.h>
 
 #include "ptrmap.h"
-#include "fdsa/types.h"
 
-fdsa_ptrMap *fdsa_ptrMap_init()
+fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *map)
 {
-    fdsa_ptrMap *map = calloc(1, sizeof(fdsa_ptrMap));
     if (!map)
     {
-        return NULL;
+        return fdsa_failed;
     }
 
     map->create = fdsa_ptrMap_create;
+    map->destory = fdsa_ptrMap_destroy;
     map->at = fdsa_ptrMap_at;
     map->insertNode = fdsa_ptrMap_insertNode;
     map->deleteNode = fdsa_ptrMap_deleteNode;
-    return map;
+    return fdsa_success;
 }
 
-fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
-                               fdsa_freeFunc keyFreeFunc,
-                               fdsa_freeFunc valueFreeFunc)
+fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
+                                fdsa_freeFunc keyFreeFunc,
+                                fdsa_freeFunc valueFreeFunc)
 {
     if (!keyCmpFunc)
     {
         return NULL;
     }
 
-    ptrRBTree *ret = calloc(1, sizeof(ptrRBTree));
+    fdsa_ptrMap *ret = calloc(1, sizeof(fdsa_ptrMap));
     if (!ret)
     {
         return NULL;
@@ -64,18 +63,10 @@ fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
         return NULL;
     }
 
-    ret->nil->key = NULL;
-    ret->nil->value = NULL;
     ret->nil->color = ptrRBTreeNodeColor_black; // nil must be black
     ret->nil->parent = ret->nil;
     ret->nil->left = ret->nil;
     ret->nil->right = ret->nil;
-
-    ret->id = fdsa_types_ptrMap;
-    ret->magic[0] = 0xf;
-    ret->magic[1] = 0xd;
-    ret->magic[2] = 's';
-    ret->magic[3] = 0xa;
 
     ret->root = ret->nil;
     ret->keyCmpFunc = keyCmpFunc;
@@ -85,14 +76,13 @@ fdsa_handle fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
     return ret;
 }
 
-fdsa_exitstate fdsa_ptrMap_destroy(fdsa_handle in)
+fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *tree)
 {
-    if (fdsa_checkInput(in, fdsa_types_ptrMap))
+    if (!tree)
     {
         return fdsa_failed;
     }
 
-    ptrRBTree *tree = (ptrRBTree *)in;
     fdsa_ptrMap_clear(tree, tree->root);
 
     // now root has been destroyed
@@ -101,19 +91,13 @@ fdsa_exitstate fdsa_ptrMap_destroy(fdsa_handle in)
     return fdsa_success;
 }
 
-void *fdsa_ptrMap_at(fdsa_handle in, void *key)
+void *fdsa_ptrMap_at(fdsa_ptrMap *tree, void *key)
 {
-    if (fdsa_checkInput(in, fdsa_types_ptrMap))
+    if (!tree || !key)
     {
         return NULL;
     }
 
-    if (!key)
-    {
-        return NULL;
-    }
-
-    ptrRBTree *tree = (ptrRBTree *)in;
     ptrRBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
     if (res == tree->nil)
     {
@@ -123,19 +107,13 @@ void *fdsa_ptrMap_at(fdsa_handle in, void *key)
     return res->value;
 }
 
-fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle in, void *key, void *value)
+fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
 {
-    if (fdsa_checkInput(in, fdsa_types_ptrMap))
+    if (!tree || !key || !value)
     {
         return fdsa_failed;
     }
 
-    if (!key || !value)
-    {
-        return fdsa_failed;
-    }
-
-    ptrRBTree *tree = (ptrRBTree *)in;
     ptrRBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
     if (res != tree->nil)
     {
@@ -194,19 +172,12 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_handle in, void *key, void *value)
     return fdsa_success;
 } // end fdsa_ptrMap_insertNode
 
-fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_handle in, void *key)
+fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *tree, void *key)
 {
-    if (fdsa_checkInput(in, fdsa_types_ptrMap))
+    if (!tree || !key)
     {
         return fdsa_failed;
     }
-
-    if (!key)
-    {
-        return fdsa_failed;
-    }
-
-    ptrRBTree *tree = (ptrRBTree *)in;
 
     ptrRBTreeNode *delete_node = fdsa_ptrMap_searchNode(tree, key);
     if (delete_node == tree->nil)
@@ -325,7 +296,7 @@ void destroyPtrRBTreeNode(ptrRBTreeNode *node,
     free(node);
 }
 
-void fdsa_ptrMap_clear(ptrRBTree *tree,
+void fdsa_ptrMap_clear(fdsa_ptrMap *tree,
                        ptrRBTreeNode *in)
 {
     // use LRV traversal to clean up
@@ -339,7 +310,7 @@ void fdsa_ptrMap_clear(ptrRBTree *tree,
     destroyPtrRBTreeNode(in, tree->keyFreeFunc, tree->valueFreeFunc);
 }
 
-void fdsa_ptrMap_leftRotation(ptrRBTree *tree, ptrRBTreeNode *x)
+void fdsa_ptrMap_leftRotation(fdsa_ptrMap *tree, ptrRBTreeNode *x)
 {
     ptrRBTreeNode *y = x->right;
 
@@ -369,7 +340,7 @@ void fdsa_ptrMap_leftRotation(ptrRBTree *tree, ptrRBTreeNode *x)
     x->parent = y;
 }
 
-void fdsa_ptrMap_rightRotation(ptrRBTree *tree, ptrRBTreeNode *y)
+void fdsa_ptrMap_rightRotation(fdsa_ptrMap *tree, ptrRBTreeNode *y)
 {
     ptrRBTreeNode *x = y->left;
 
@@ -398,7 +369,7 @@ void fdsa_ptrMap_rightRotation(ptrRBTree *tree, ptrRBTreeNode *y)
     y->parent = x;
 }
 
-ptrRBTreeNode *fdsa_ptrMap_searchNode(ptrRBTree *tree, void *key)
+ptrRBTreeNode *fdsa_ptrMap_searchNode(fdsa_ptrMap *tree, void *key)
 {
     ptrRBTreeNode *current = tree->root;
     int res;
@@ -422,7 +393,7 @@ ptrRBTreeNode *fdsa_ptrMap_searchNode(ptrRBTree *tree, void *key)
     return current;
 } // end fdsa_ptrMap_searchNode
 
-void fdsa_ptrMap_insertFixedUp(ptrRBTree *tree, ptrRBTreeNode *current)
+void fdsa_ptrMap_insertFixedUp(fdsa_ptrMap *tree, ptrRBTreeNode *current)
 {
     // case0: the parent is black, so no need to enter the loop
     // in the other word
@@ -488,7 +459,7 @@ void fdsa_ptrMap_insertFixedUp(ptrRBTree *tree, ptrRBTreeNode *current)
     tree->root->color = ptrRBTreeNodeColor_black; // insure root is black
 } // end fdsa_ptrMap_insertFixedUp
 
-ptrRBTreeNode *fdsa_ptrMap_nodeLeftmost(ptrRBTree *tree, ptrRBTreeNode *current)
+ptrRBTreeNode *fdsa_ptrMap_nodeLeftmost(fdsa_ptrMap *tree, ptrRBTreeNode *current)
 {
     while (current->left != tree->nil)
     {
@@ -498,7 +469,7 @@ ptrRBTreeNode *fdsa_ptrMap_nodeLeftmost(ptrRBTree *tree, ptrRBTreeNode *current)
     return current;
 }
 
-ptrRBTreeNode *fdsa_ptrMap_nodeSuccessor(ptrRBTree *tree, ptrRBTreeNode *current)
+ptrRBTreeNode *fdsa_ptrMap_nodeSuccessor(fdsa_ptrMap *tree, ptrRBTreeNode *current)
 {
     if (current->right != tree->nil)
     {
@@ -516,7 +487,7 @@ ptrRBTreeNode *fdsa_ptrMap_nodeSuccessor(ptrRBTree *tree, ptrRBTreeNode *current
     return new_node;
 } // end fdsa_ptrMap_nodeSuccessor
 
-void fdsa_ptrMap_deleteFixedUp(ptrRBTree *tree, ptrRBTreeNode *current)
+void fdsa_ptrMap_deleteFixedUp(fdsa_ptrMap *tree, ptrRBTreeNode *current)
 {
     // Case0:(i) if current is rad, let is black
     //       (ii) if current is root, let it black

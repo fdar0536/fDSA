@@ -30,18 +30,22 @@ extern "C"
 {
 #endif
 
-typedef struct fdsa_ptrMap
+typedef struct fdsa_ptrMap fdsa_ptrMap;
+
+typedef struct fdsa_ptrMap_api
 {
-    fdsa_handle (*create)(fdsa_cmpFunc keyCmpFunc,
-                          fdsa_freeFunc keyFreeFunc,
-                          fdsa_freeFunc valueFreeFunc);
+    fdsa_ptrMap *(*create)(fdsa_cmpFunc keyCmpFunc,
+                           fdsa_freeFunc keyFreeFunc,
+                           fdsa_freeFunc valueFreeFunc);
 
-    void *(*at)(fdsa_handle map, void *key);
+    fdsa_exitstate (*destory)(fdsa_ptrMap *);
 
-    fdsa_exitstate (*insertNode)(fdsa_handle map, void *key, void *value);
+    void *(*at)(fdsa_ptrMap *map, void *key);
 
-    fdsa_exitstate (*deleteNode)(fdsa_handle map, void *key);
-} fdsa_ptrMap;
+    fdsa_exitstate (*insertNode)(fdsa_ptrMap *map, void *key, void *value);
+
+    fdsa_exitstate (*deleteNode)(fdsa_ptrMap *map, void *key);
+} fdsa_ptrMap_api;
 
 #ifdef __cplusplus
 }

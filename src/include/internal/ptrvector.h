@@ -33,31 +33,35 @@ extern "C"
 {
 #endif
 
-typedef struct fdsa_ptrVector
+typedef struct fdsa_ptrVector fdsa_ptrVector;
+
+typedef struct fdsa_ptrVector_api
 {
-    fdsa_handle (*create)(fdsa_freeFunc freeFunc);
+    fdsa_ptrVector *(*create)(fdsa_freeFunc freeFunc);
 
-    void *(*at)(fdsa_handle ptrVector, size_t index);
+    fdsa_exitstate (*destory)(fdsa_ptrVector *ptrVector);
 
-    fdsa_exitstate (*setValue)(fdsa_handle ptrVector,
+    void *(*at)(fdsa_ptrVector *ptrVector, size_t index);
+
+    fdsa_exitstate (*setValue)(fdsa_ptrVector *ptrVector,
                                size_t index,
                                void *src);
 
-    fdsa_exitstate (*clear)(fdsa_handle ptrVector);
+    fdsa_exitstate (*clear)(fdsa_ptrVector *ptrVector);
 
-    fdsa_exitstate (*size)(fdsa_handle ptrVector, size_t *dst);
+    fdsa_exitstate (*size)(fdsa_ptrVector *ptrVector, size_t *dst);
 
-    fdsa_exitstate (*capacity)(fdsa_handle ptrVector, size_t *dst);
+    fdsa_exitstate (*capacity)(fdsa_ptrVector *ptrVector, size_t *dst);
 
-    fdsa_exitstate (*reserve)(fdsa_handle ptrVector, size_t newSize);
+    fdsa_exitstate (*reserve)(fdsa_ptrVector *ptrVector, size_t newSize);
 
-    fdsa_exitstate (*pushback)(fdsa_handle ptrVector, void *src);
+    fdsa_exitstate (*pushback)(fdsa_ptrVector *ptrVector, void *src);
 
-    fdsa_exitstate (*resize)(fdsa_handle vector,
+    fdsa_exitstate (*resize)(fdsa_ptrVector *vector,
                              size_t newSize,
                              void *src,
                              void *(*deepCopyFunc)(void *));
-} fdsa_ptrVector;
+} fdsa_ptrVector_api;
 
 #ifdef __cplusplus
 }

@@ -42,46 +42,42 @@ typedef struct ptrLinkedListNode
     struct ptrLinkedListNode *next;
 } ptrLinkedListNode;
 
-typedef struct ptrLinkedList
+typedef struct fdsa_ptrLinkedList
 {
-    fdsa_types id;
-
-    uint8_t magic[4];
-
     ptrLinkedListNode *root;
 
     fdsa_freeFunc dataFreeFunc;
-} ptrLinkedList;
+} fdsa_ptrLinkedList;
 
-fdsa_handle fdsa_ptrLinkedList_create(fdsa_freeFunc);
+fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc);
 
-fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_handle);
+fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *);
 
-void fdsa_ptrLinkedList_clear(fdsa_handle);
+void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *);
 
-fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_handle, void *);
+fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *, void *);
 
-void *fdsa_ptrLinkedList_popFront(fdsa_handle);
+void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *);
 
-fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_handle, void *);
+fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_ptrLinkedList *, void *);
 
-void *fdsa_ptrLinkedList_popBack(fdsa_handle);
+void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *);
 
-fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_handle,
+fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *,
                                               fdsa_cmpFunc,
                                               void *);
 
-fdsa_exitstate fdsa_ptrLinkedList_removeAfter(fdsa_handle,
+fdsa_exitstate fdsa_ptrLinkedList_removeAfter(fdsa_ptrLinkedList *,
                                               fdsa_cmpFunc);
 
-fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_handle,
+fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *,
                                                fdsa_cmpFunc,
                                                void *);
 
-fdsa_exitstate fdsa_ptrLinkedList_removeBefore(fdsa_handle,
+fdsa_exitstate fdsa_ptrLinkedList_removeBefore(fdsa_ptrLinkedList *,
                                                fdsa_cmpFunc);
 
-ptrLinkedListNode *createLinkedListNode();
+ptrLinkedListNode *createPtrLinkedListNode();
 
 #ifdef __cplusplus
 }

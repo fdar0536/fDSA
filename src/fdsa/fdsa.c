@@ -23,52 +23,9 @@
 
 #include "config.h"
 #include "fdsa.h"
-#include "types.h"
 #include "ptrmap.h"
 #include "vector.h"
 #include "ptrvector.h"
-
-fdsa_exitstate fdsa_getHandleType(fdsa_handle in, fdsa_types *dst)
-{
-    if (!in)
-    {
-        return fdsa_failed;
-    }
-
-    ID *id = (ID *)in;
-    *dst = id->id;
-
-    return fdsa_success;
-}
-
-fdsa_exitstate fdsa_closeHandle(fdsa_handle in)
-{
-    if (!in)
-    {
-        return fdsa_failed;
-    }
-
-    ID *id = (ID *)in;
-    switch(id->id)
-    {
-    case fdsa_types_ptrMap:
-    {
-        return fdsa_ptrMap_destroy(in);
-    }
-    case fdsa_types_ptrVector:
-    {
-        return fdsa_ptrVector_destroy(in);
-    }
-    case fdsa_types_vector:
-    {
-        return fdsa_vector_destroy(in);
-    }
-    default:
-    {
-        return fdsa_failed;
-    }
-    }
-}
 
 const char *fdsa_version()
 {

@@ -32,27 +32,27 @@ extern "C"
 {
 #endif
 
-fdsa_vector *fdsa_vector_init();
+fdsa_exitstate fdsa_vector_init(fdsa_vector_api *);
 
-fdsa_handle fdsa_vector_create(size_t sizeOfData);
+fdsa_vector *fdsa_vector_create(size_t sizeOfData);
 
-fdsa_exitstate fdsa_vector_destroy(fdsa_handle vector);
+fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vector);
 
-fdsa_exitstate fdsa_vector_at(fdsa_handle vector, size_t index, void *dst);
+fdsa_exitstate fdsa_vector_at(fdsa_vector *vector, size_t index, void *dst);
 
-fdsa_exitstate fdsa_vector_setValue(fdsa_handle vector, size_t, const void *);
+fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vector, size_t, const void *);
 
-fdsa_exitstate fdsa_vector_clear(fdsa_handle vector);
+fdsa_exitstate fdsa_vector_clear(fdsa_vector *vector);
 
-fdsa_exitstate fdsa_vector_size(fdsa_handle vector, size_t *);
+fdsa_exitstate fdsa_vector_size(fdsa_vector *vector, size_t *);
 
-fdsa_exitstate fdsa_vector_capacity(fdsa_handle vector, size_t *);
+fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vector, size_t *);
 
-fdsa_exitstate fdsa_vector_reserve(fdsa_handle vector, size_t);
+fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vector, size_t);
 
-fdsa_exitstate fdsa_vector_pushback(fdsa_handle vector, const void *);
+fdsa_exitstate fdsa_vector_pushback(fdsa_vector *vector, const void *);
 
-fdsa_exitstate fdsa_vector_resize(fdsa_handle vector, size_t, const void *);
+fdsa_exitstate fdsa_vector_resize(fdsa_vector *vector, size_t, const void *);
 
 #ifdef __cplusplus
 }
