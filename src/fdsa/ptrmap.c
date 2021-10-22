@@ -109,7 +109,7 @@ void *fdsa_ptrMap_at(fdsa_ptrMap *tree, void *key)
 
 fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
 {
-    if (!tree || !key || !value)
+    if (!tree || !key)
     {
         return fdsa_failed;
     }

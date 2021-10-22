@@ -106,7 +106,7 @@ fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *vec,
                                        size_t index,
                                        void *src)
 {
-    if (!vec || !src)
+    if (!vec)
     {
         return fdsa_failed;
     }
@@ -202,7 +202,7 @@ fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
 
 fdsa_exitstate fdsa_ptrVector_pushback(fdsa_ptrVector *vec, void *src)
 {
-    if (!vec || !src)
+    if (!vec)
     {
         return fdsa_failed;
     }
@@ -230,7 +230,7 @@ fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
                                      void *src,
                                      void *(*deepCopyFunc)(void *))
 {
-    if (!vec || !src)
+    if (!vec)
     {
         return fdsa_failed;
     }
