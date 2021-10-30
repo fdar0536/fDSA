@@ -74,6 +74,8 @@ fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc,
 
 fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *);
 
+fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *, uint8_t *);
+
 void *fdsa_ptrMap_at(fdsa_ptrMap *, void *);
 
 fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *, void *, void *);

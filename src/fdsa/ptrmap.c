@@ -34,6 +34,7 @@ fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *map)
 
     map->create = fdsa_ptrMap_create;
     map->destory = fdsa_ptrMap_destroy;
+    map->isEmpty = fdsa_ptrMap_isEmpty;
     map->at = fdsa_ptrMap_at;
     map->insertNode = fdsa_ptrMap_insertNode;
     map->deleteNode = fdsa_ptrMap_deleteNode;
@@ -88,6 +89,13 @@ fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *tree)
     // now root has been destroyed
     destroyPtrRBTreeNode(tree->nil, tree->keyFreeFunc, tree->valueFreeFunc);
     free(tree);
+    return fdsa_success;
+}
+
+fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *tree, uint8_t *res)
+{
+    if (!tree || !res) return fdsa_failed;
+    *res = (tree->root == tree->nil);
     return fdsa_success;
 }
 

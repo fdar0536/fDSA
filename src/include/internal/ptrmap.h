@@ -23,6 +23,8 @@
 
 #pragma once
 
+#include <inttypes.h>
+
 #include "defines.h"
 
 #ifdef __cplusplus
@@ -39,6 +41,8 @@ typedef struct fdsa_ptrMap_api
                            fdsa_freeFunc valueFreeFunc);
 
     fdsa_exitstate (*destory)(fdsa_ptrMap *);
+
+    fdsa_exitstate (*isEmpty)(fdsa_ptrMap *map, uint8_t *res);
 
     void *(*at)(fdsa_ptrMap *map, void *key);
 

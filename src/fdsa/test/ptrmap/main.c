@@ -103,6 +103,29 @@ int main()
         return 1;
     }
 
+    uint8_t res;
+    if (mapApi->isEmpty(map, &res) == fdsa_failed)
+    {
+        fputs("Fail to detect map is empty or not.", stderr);
+        if (mapApi->destory(map) == fdsa_failed)
+        {
+            fputs("Fail to destory map.\n", stderr);
+        }
+
+        return 1;
+    }
+
+    if (!res) // res == false
+    {
+        fputs("Map should not be NOT EMPTY.", stderr);
+        if (mapApi->destory(map) == fdsa_failed)
+        {
+            fputs("Fail to destory map.\n", stderr);
+        }
+
+        return 1;
+    }
+
     Testing *data = createTesting();
     if (!data)
     {
@@ -223,6 +246,28 @@ int main()
     dumpData(mapApi, map, "789");
     dumpData(mapApi, map, "012");
     printf("\n");
+
+    if (mapApi->isEmpty(map, &res) == fdsa_failed)
+    {
+        fputs("Fail to detect map is empty or not.", stderr);
+        if (mapApi->destory(map) == fdsa_failed)
+        {
+            fputs("Fail to destory map.\n", stderr);
+        }
+
+        return 1;
+    }
+
+    if (res) // res == true
+    {
+        fputs("Map should not be EMPTY.", stderr);
+        if (mapApi->destory(map) == fdsa_failed)
+        {
+            fputs("Fail to destory map.\n", stderr);
+        }
+
+        return 1;
+    }
 
     if (mapApi->destory(map) == fdsa_failed)
     {
