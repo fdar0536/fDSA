@@ -59,6 +59,15 @@ typedef struct fdsa_vector_api
     fdsa_exitstate (*resize)(fdsa_vector *vector,
                              size_t newSize,
                              const void *src);
+
+    fdsa_exitstate (*append)(fdsa_vector *vector,
+                             const void *dataArray,
+                             size_t dataLen);
+
+    const void *(*data)(fdsa_vector *vector);
+
+    void *(*takeData)(fdsa_vector *vector);
+
 } fdsa_vector_api;
 
 #ifdef __cplusplus

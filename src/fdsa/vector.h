@@ -54,6 +54,14 @@ fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vector, const void *);
 
 fdsa_exitstate fdsa_vector_resize(fdsa_vector *vector, size_t, const void *);
 
+fdsa_exitstate fdsa_vector_append(fdsa_vector *vector,
+                                  const void *dataArray,
+                                  size_t dataLen);
+
+const void *fdsa_vector_data(fdsa_vector *);
+
+void *fdsa_vector_takeData(fdsa_vector *);
+
 #ifdef __cplusplus
 }
 #endif

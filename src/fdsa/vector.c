@@ -53,6 +53,9 @@ fdsa_exitstate fdsa_vector_init(fdsa_vector_api *ret)
     ret->reserve = fdsa_vector_reserve;
     ret->pushBack = fdsa_vector_pushBack;
     ret->resize = fdsa_vector_resize;
+    ret->append = fdsa_vector_append;
+    ret->data = fdsa_vector_data;
+    ret->takeData = fdsa_vector_takeData;
 
     return fdsa_success;
 }
@@ -250,4 +253,42 @@ fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
     }
 
     return fdsa_success;
+}
+
+fdsa_exitstate fdsa_vector_append(fdsa_vector *vec,
+                                  const void *in,
+                                  size_t inLen)
+{
+    if (!vec || !in || !inLen) return fdsa_failed;
+
+    if (fdsa_vector_reserve(vec, vec->capacity + inLen) == fdsa_failed)
+    {
+        return fdsa_failed;
+    }
+
+    uint8_t *data = vec->data;
+    data += (vec->size * vec->sizeOfData);
+
+    memcpy(data, in, vec->sizeOfData * inLen);
+    vec->size += inLen;
+    return fdsa_success;
+}
+
+const void *fdsa_vector_data(fdsa_vector *vec)
+{
+    if (!vec) return NULL;
+
+    return vec->data;
+}
+
+void *fdsa_vector_takeData(fdsa_vector *vec)
+{
+    if (!vec) return NULL;
+
+    uint8_t *ret = vec->data;
+
+    vec->capacity = 0;
+    vec->size = 0;
+    vec->data = NULL;
+    return ret;
 }
