@@ -21,9 +21,12 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#include <cstdlib>
 
-#include "ptrlinkedlist.h"
+#include "ptrlinkedlist.hpp"
+
+extern "C"
+{
 
 fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *ret)
 {
@@ -49,13 +52,13 @@ fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *ret)
 
 fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
 {
-    fdsa_ptrLinkedList *ret = calloc(1, sizeof(fdsa_ptrLinkedList));
+    fdsa_ptrLinkedList *ret = new (std::nothrow) fdsa_ptrLinkedList;
     if (!ret) return NULL;
 
     ret->root = createPtrLinkedListNode();
     if (!ret->root)
     {
-        free(ret);
+        delete ret;
         return NULL;
     }
 
@@ -72,8 +75,8 @@ fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
     fdsa_ptrLinkedList_clear(list);
 
     // clean up root and object.
-    free(list->root);
-    free(list);
+    delete list->root;
+    delete list;
 
     return fdsa_success;
 }
@@ -81,6 +84,7 @@ fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
 void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *list)
 {
     if (!list) return;
+    std::lock_guard<std::mutex> lock(list->mutex);
 
     ptrLinkedListNode *priv = list->root;
     ptrLinkedListNode *current = priv->next;
@@ -91,7 +95,7 @@ void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *list)
         current = current->next;
 
         if (list->dataFreeFunc) list->dataFreeFunc(priv->data);
-        free(priv);
+        delete priv;
     }
 
     // current == list->root
@@ -103,6 +107,7 @@ fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *list, void *data
 {
     if (!list) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *toBeInserted = createPtrLinkedListNode();
     if (!toBeInserted) return fdsa_failed;
     toBeInserted->data = data;
@@ -134,6 +139,7 @@ void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *root = list->root;
     if (root->next == root) /* list is empty */ return NULL;
 
@@ -143,8 +149,8 @@ void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *list)
     newHead->priv = root;
     root->next = newHead;
 
-    uint8_t *ret = head->data;
-    free(head);
+    uint8_t *ret = reinterpret_cast<uint8_t *>(head->data);
+    delete head;
 
     return ret;
 }
@@ -153,6 +159,7 @@ fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_ptrLinkedList *list, void *data)
 {
     if (!list) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *toBeInserted = createPtrLinkedListNode();
     if (!toBeInserted) return fdsa_failed;
     toBeInserted->data = data;
@@ -185,6 +192,7 @@ void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *root = list->root;
     if (root->next == root) /* list is empty */ return NULL;
 
@@ -194,8 +202,8 @@ void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *list)
     newTail->next = root;
     root->priv = newTail;
 
-    uint8_t *ret= tail->data;
-    free(tail);
+    uint8_t *ret= reinterpret_cast<uint8_t *>(tail->data);
+    delete tail;
 
     return ret;
 }
@@ -206,6 +214,7 @@ fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *list,
 {
     if (!list || !ref) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *toBeInserted = createPtrLinkedListNode();
     if (!toBeInserted) return fdsa_failed;
     toBeInserted->data = data;
@@ -221,7 +230,7 @@ fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *list,
     }
     else
     {
-        ptrLinkedListNode *current = (void *)ref;
+        ptrLinkedListNode *current = reinterpret_cast<ptrLinkedListNode *>(ref);
         ptrLinkedListNode *next = current->next;
 
         current->next = toBeInserted;
@@ -241,6 +250,7 @@ fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *list,
 {
     if (!list || !ref) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *toBeInserted = createPtrLinkedListNode();
     if (!toBeInserted) return fdsa_failed;
     toBeInserted->data = data;
@@ -256,7 +266,7 @@ fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *list,
     }
     else
     {
-        ptrLinkedListNode *current = (void *)ref;
+        ptrLinkedListNode *current = reinterpret_cast<ptrLinkedListNode *>(ref);
         ptrLinkedListNode *priv = current->priv;
 
         current->priv = toBeInserted;
@@ -275,6 +285,7 @@ fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
 {
     if (!list || !ref) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     ptrLinkedListNode *root = list->root;
     if (root->next == root)
     {
@@ -282,7 +293,7 @@ fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
         return fdsa_failed;
     }
 
-    ptrLinkedListNode *toBeRemoved = (void *)ref;
+    ptrLinkedListNode *toBeRemoved = reinterpret_cast<ptrLinkedListNode *>(ref);
     if (toBeRemoved == root) return fdsa_failed;
 
     ptrLinkedListNode *priv = toBeRemoved->priv;
@@ -293,7 +304,7 @@ fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
 
     // clean up
     if (list->dataFreeFunc) list->dataFreeFunc(toBeRemoved->data);
-    free(toBeRemoved);
+    delete toBeRemoved;
 
     return fdsa_success;
 }
@@ -302,26 +313,28 @@ fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_first(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     if (list->root->next == list->root)
     {
         // list is empty
         return NULL;
     }
 
-    return (void *)list->root->next;
+    return reinterpret_cast<fdsa_ptrLinkedListNode *>(list->root->next);
 }
 
 fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_last(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     if (list->root->next == list->root)
     {
         // list is empty
         return NULL;
     }
 
-    return (void *)list->root->priv;
+    return reinterpret_cast<fdsa_ptrLinkedListNode *>(list->root->priv);
 }
 
 fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(fdsa_ptrLinkedList *list,
@@ -329,15 +342,16 @@ fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(fdsa_ptrLinkedList *list,
 {
     if (!list || !ref) return NULL;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     if (list->root->next == list->root)
     {
         // list is empty
         return NULL;
     }
 
-    ptrLinkedListNode *node = (void *)ref;
+    ptrLinkedListNode *node = reinterpret_cast<ptrLinkedListNode *>(ref);
     if (node->next == list->root) return NULL;
-    return (void *)node->next;
+    return reinterpret_cast<fdsa_ptrLinkedListNode *>(node->next);
 }
 
 fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_priv(fdsa_ptrLinkedList *list,
@@ -345,20 +359,21 @@ fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_priv(fdsa_ptrLinkedList *list,
 {
     if (!list || !ref) return NULL;
 
+    std::lock_guard<std::mutex> lock(list->mutex);
     if (list->root->next == list->root)
     {
         // list is empty
         return NULL;
     }
 
-    ptrLinkedListNode *node = (void *)ref;
+    ptrLinkedListNode *node = reinterpret_cast<ptrLinkedListNode *>(ref);
     if (node->priv == list->root) return NULL;
-    return (void *)node->priv;
+    return reinterpret_cast<fdsa_ptrLinkedListNode *>(node->priv);
 }
 
 ptrLinkedListNode *createPtrLinkedListNode()
 {
-    ptrLinkedListNode *ret = calloc(1, sizeof(ptrLinkedListNode));
+    ptrLinkedListNode *ret = new (std::nothrow) ptrLinkedListNode;
     if (!ret) return NULL;
 
     ret->data = NULL;
@@ -367,3 +382,5 @@ ptrLinkedListNode *createPtrLinkedListNode()
 
     return ret;
 }
+
+} // end extern "C"

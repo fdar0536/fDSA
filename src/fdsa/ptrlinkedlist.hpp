@@ -23,7 +23,9 @@
 
 #pragma once
 
-#include <inttypes.h>
+#include <mutex>
+
+#include <cinttypes>
 
 #include "include/internal/defines.h"
 #include "include/internal/ptrlinkedlist.h"
@@ -47,6 +49,8 @@ typedef struct fdsa_ptrLinkedList
     ptrLinkedListNode *root;
 
     fdsa_freeFunc dataFreeFunc;
+
+    std::mutex mutex;
 } fdsa_ptrLinkedList;
 
 fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *);

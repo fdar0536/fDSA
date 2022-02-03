@@ -5,6 +5,9 @@ project(fDSA
     VERSION 0.0.1
 )
 
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 if (UNIX)
     add_compile_options(-Wall -Werror -Wextra -fvisibility=hidden)
 

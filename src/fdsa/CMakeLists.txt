@@ -9,7 +9,7 @@ set(fdsa_public_headers
 
 set(fdsa_priv_headers
     fdsa/fdsa.h
-    fdsa/ptrlinkedlist.h
+    fdsa/ptrlinkedlist.hpp
     fdsa/ptrmap.h
     fdsa/ptrvector.h
     fdsa/vector.h
@@ -20,10 +20,10 @@ set(fdsa_priv_headers
 set(fdsa_src
     fdsa/fdsa.c
     fdsa/init.c
-    fdsa/ptrlinkedlist.c
-    fdsa/ptrmap.c
-    fdsa/ptrvector.c
-    fdsa/vector.c
+    fdsa/ptrlinkedlist.cpp
+    fdsa/ptrmap.cpp
+    fdsa/ptrvector.cpp
+    fdsa/vector.cpp
 )
 
 add_library(fDSA
