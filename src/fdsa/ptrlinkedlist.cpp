@@ -71,7 +71,7 @@ fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *ret)
     return fdsa_success;
 }
 
-fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
+FDSA_API fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
 {
     fdsa_ptrLinkedList *ret = new (std::nothrow) fdsa_ptrLinkedList;
     if (!ret) return NULL;
@@ -91,7 +91,7 @@ fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc dataFreeFunc)
     return ret;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
+FDSA_API fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
 {
     fdsa_ptrLinkedList_clear(list);
 
@@ -102,7 +102,7 @@ fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *list)
     return fdsa_success;
 }
 
-void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *list)
+FDSA_API void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *list)
 {
     if (!list) return;
     std::lock_guard<std::mutex> lock(list->mutex);
@@ -124,7 +124,8 @@ void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *list)
     current->priv = current;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *list, void *data)
+FDSA_API fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *list,
+                                                     void *data)
 {
     if (!list) return fdsa_failed;
 
@@ -156,7 +157,7 @@ fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *list, void *data
     return fdsa_success;
 }
 
-void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *list)
+FDSA_API void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
@@ -176,7 +177,8 @@ void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *list)
     return ret;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_ptrLinkedList *list, void *data)
+FDSA_API fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_ptrLinkedList *list,
+                                                    void *data)
 {
     if (!list) return fdsa_failed;
 
@@ -209,7 +211,7 @@ fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_ptrLinkedList *list, void *data)
     return fdsa_success;
 }
 
-void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *list)
+FDSA_API void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
@@ -229,9 +231,10 @@ void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *list)
     return ret;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *list,
-                                              fdsa_ptrLinkedListNode *ref,
-                                              void *data)
+FDSA_API fdsa_exitstate fdsa_ptrLinkedList_insertAfter(
+        fdsa_ptrLinkedList *list,
+        fdsa_ptrLinkedListNode *ref,
+        void *data)
 {
     if (!list || !ref) return fdsa_failed;
 
@@ -265,9 +268,10 @@ fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *list,
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *list,
-                                               fdsa_ptrLinkedListNode *ref,
-                                               void *data)
+FDSA_API fdsa_exitstate fdsa_ptrLinkedList_insertBefore(
+        fdsa_ptrLinkedList *list,
+        fdsa_ptrLinkedListNode *ref,
+        void *data)
 {
     if (!list || !ref) return fdsa_failed;
 
@@ -301,8 +305,8 @@ fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *list,
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
-                                         fdsa_ptrLinkedListNode *ref)
+FDSA_API fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
+                                                  fdsa_ptrLinkedListNode *ref)
 {
     if (!list || !ref) return fdsa_failed;
 
@@ -330,7 +334,7 @@ fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *list,
     return fdsa_success;
 }
 
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_first(fdsa_ptrLinkedList *list)
+FDSA_API fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_first(fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
@@ -344,7 +348,8 @@ fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_first(fdsa_ptrLinkedList *list)
     return reinterpret_cast<fdsa_ptrLinkedListNode *>(list->root->next);
 }
 
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_last(fdsa_ptrLinkedList *list)
+FDSA_API fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_last(
+        fdsa_ptrLinkedList *list)
 {
     if (!list) return NULL;
 
@@ -358,8 +363,9 @@ fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_last(fdsa_ptrLinkedList *list)
     return reinterpret_cast<fdsa_ptrLinkedListNode *>(list->root->priv);
 }
 
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(fdsa_ptrLinkedList *list,
-                                                fdsa_ptrLinkedListNode *ref)
+FDSA_API fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(
+        fdsa_ptrLinkedList *list,
+        fdsa_ptrLinkedListNode *ref)
 {
     if (!list || !ref) return NULL;
 
@@ -375,8 +381,9 @@ fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(fdsa_ptrLinkedList *list,
     return reinterpret_cast<fdsa_ptrLinkedListNode *>(node->next);
 }
 
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_priv(fdsa_ptrLinkedList *list,
-                                                fdsa_ptrLinkedListNode *ref)
+FDSA_API fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_priv(
+        fdsa_ptrLinkedList *list,
+        fdsa_ptrLinkedListNode *ref)
 {
     if (!list || !ref) return NULL;
 

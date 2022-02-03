@@ -63,6 +63,35 @@ typedef struct fdsa_ptrVector_api
                              void *(*deepCopyFunc)(void *));
 } fdsa_ptrVector_api;
 
+FDSA_API fdsa_ptrVector *fdsa_ptrVector_create(fdsa_freeFunc freeFunc);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *ptrVector);
+
+FDSA_API void *fdsa_ptrVector_at(fdsa_ptrVector *ptrVector, size_t index);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *ptrVector,
+                                                size_t index,
+                                                void *src);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_clear(fdsa_ptrVector *ptrVector);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_size(fdsa_ptrVector *ptrVector,
+                                            size_t *dst);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *ptrVector,
+                                                size_t *dst);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *ptrVector,
+                                               size_t newSize);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *ptrVector,
+                                                void *src);
+
+FDSA_API fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vector,
+                                              size_t newSize,
+                                              void *src,
+                                              void *(*deepCopyFunc)(void *));
+
 #ifdef __cplusplus
 }
 #endif

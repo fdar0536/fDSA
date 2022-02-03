@@ -29,16 +29,6 @@
 #include "internal/ptrvector.h"
 #include "internal/vector.h"
 
-#if defined _WIN32 || defined __CYGWIN__
-#ifdef __MINGW32__
-#define FDSA_API __attribute__((dllexport))
-#else
-#define FDSA_API __declspec(dllexport)
-#endif // __MINGW32__
-#else
-#define FDSA_API __attribute__((visibility("default")))
-#endif
-
 #ifdef __cplusplus
 extern "C"
 {
@@ -69,6 +59,8 @@ typedef struct fDSA
  * Initialize fdsa APIs.
  */
 FDSA_API fdsa_exitstate fdsa_init(fDSA *);
+
+FDSA_API const char *fdsa_version();
 
 #ifdef __cplusplus
 }

@@ -39,42 +39,6 @@ extern "C"
 
 fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *);
 
-fdsa_ptrLinkedList *fdsa_ptrLinkedList_create(fdsa_freeFunc);
-
-fdsa_exitstate fdsa_ptrLinkedList_destory(fdsa_ptrLinkedList *);
-
-void fdsa_ptrLinkedList_clear(fdsa_ptrLinkedList *);
-
-fdsa_exitstate fdsa_ptrLinkedList_pushFront(fdsa_ptrLinkedList *, void *);
-
-void *fdsa_ptrLinkedList_popFront(fdsa_ptrLinkedList *);
-
-fdsa_exitstate fdsa_ptrLinkedList_pushBack(fdsa_ptrLinkedList *, void *);
-
-void *fdsa_ptrLinkedList_popBack(fdsa_ptrLinkedList *);
-
-fdsa_exitstate fdsa_ptrLinkedList_insertAfter(fdsa_ptrLinkedList *,
-                                              fdsa_ptrLinkedListNode *,
-                                              void *);
-
-fdsa_exitstate fdsa_ptrLinkedList_insertBefore(fdsa_ptrLinkedList *,
-                                               fdsa_ptrLinkedListNode *,
-                                               void *);
-
-fdsa_exitstate fdsa_ptrLinkedList_remove(fdsa_ptrLinkedList *,
-                                         fdsa_ptrLinkedListNode *);
-
-
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_first(fdsa_ptrLinkedList *ptrLinkedList);
-
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_last(fdsa_ptrLinkedList *ptrLinkedList);
-
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_next(fdsa_ptrLinkedList *ptrLinkedList,
-                                                fdsa_ptrLinkedListNode *node);
-
-fdsa_ptrLinkedListNode *fdsa_ptrLinkedList_priv(fdsa_ptrLinkedList *ptrLinkedList,
-                                                fdsa_ptrLinkedListNode *node);
-
 ptrLinkedListNode *createPtrLinkedListNode();
 
 #ifdef __cplusplus

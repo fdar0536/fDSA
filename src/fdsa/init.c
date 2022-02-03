@@ -24,7 +24,6 @@
 #include <stdlib.h>
 
 #include "include/fdsa.h"
-#include "fdsa.h"
 #include "ptrlinkedlist.h"
 #include "ptrmap.h"
 #include "ptrvector.h"

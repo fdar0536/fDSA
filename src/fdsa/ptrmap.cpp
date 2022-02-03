@@ -77,9 +77,9 @@ fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *map)
     return fdsa_success;
 }
 
-fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
-                                fdsa_freeFunc keyFreeFunc,
-                                fdsa_freeFunc valueFreeFunc)
+FDSA_API fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
+                                         fdsa_freeFunc keyFreeFunc,
+                                         fdsa_freeFunc valueFreeFunc)
 {
     if (!keyCmpFunc)
     {
@@ -113,7 +113,7 @@ fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
     return ret;
 }
 
-fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *tree)
+FDSA_API fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *tree)
 {
     if (!tree)
     {
@@ -128,7 +128,7 @@ fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *tree)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *tree, uint8_t *res)
+FDSA_API fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *tree, uint8_t *res)
 {
     if (!tree || !res) return fdsa_failed;
 
@@ -137,7 +137,7 @@ fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *tree, uint8_t *res)
     return fdsa_success;
 }
 
-void *fdsa_ptrMap_at(fdsa_ptrMap *tree, void *key)
+FDSA_API void *fdsa_ptrMap_at(fdsa_ptrMap *tree, void *key)
 {
     if (!tree || !key)
     {
@@ -154,7 +154,9 @@ void *fdsa_ptrMap_at(fdsa_ptrMap *tree, void *key)
     return res->value;
 }
 
-fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
+FDSA_API fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree,
+                                               void *key,
+                                               void *value)
 {
     if (!tree || !key)
     {
@@ -220,7 +222,7 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
     return fdsa_success;
 } // end fdsa_ptrMap_insertNode
 
-fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *tree, void *key)
+FDSA_API fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *tree, void *key)
 {
     if (!tree || !key)
     {

@@ -56,6 +56,16 @@ typedef int (*fdsa_cmpFunc)(const void *lhs, const void *rhs);
  */
 typedef void (*fdsa_freeFunc)(void *toBeFreed);
 
+#if defined _WIN32 || defined __CYGWIN__
+#ifdef __MINGW32__
+#define FDSA_API __attribute__((dllexport))
+#else
+#define FDSA_API __declspec(dllexport)
+#endif // __MINGW32__
+#else
+#define FDSA_API __attribute__((visibility("default")))
+#endif
+
 #ifdef __cplusplus
 }
 #endif

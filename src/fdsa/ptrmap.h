@@ -44,20 +44,6 @@ typedef enum ptrRBTreeNodeColor
 
 fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *);
 
-fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc,
-                                fdsa_freeFunc,
-                                fdsa_freeFunc);
-
-fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *);
-
-fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *, uint8_t *);
-
-void *fdsa_ptrMap_at(fdsa_ptrMap *, void *);
-
-fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *, void *, void *);
-
-fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *, void *);
-
 ptrRBTreeNode *createPtrRBTreeNode(ptrRBTreeNode *nil);
 
 void destroyPtrRBTreeNode(ptrRBTreeNode *, fdsa_freeFunc, fdsa_freeFunc);

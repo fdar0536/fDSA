@@ -40,7 +40,7 @@ typedef struct fdsa_ptrMap_api
                            fdsa_freeFunc keyFreeFunc,
                            fdsa_freeFunc valueFreeFunc);
 
-    fdsa_exitstate (*destory)(fdsa_ptrMap *);
+    fdsa_exitstate (*destory)(fdsa_ptrMap *map);
 
     fdsa_exitstate (*isEmpty)(fdsa_ptrMap *map, uint8_t *res);
 
@@ -50,6 +50,22 @@ typedef struct fdsa_ptrMap_api
 
     fdsa_exitstate (*deleteNode)(fdsa_ptrMap *map, void *key);
 } fdsa_ptrMap_api;
+
+FDSA_API fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
+                                         fdsa_freeFunc keyFreeFunc,
+                                         fdsa_freeFunc valueFreeFunc);
+
+FDSA_API fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *map);
+
+FDSA_API fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *map, uint8_t *res);
+
+FDSA_API void *fdsa_ptrMap_at(fdsa_ptrMap *map, void *key);
+
+FDSA_API fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *map,
+                                               void *key,
+                                               void *value);
+
+FDSA_API fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *map, void *key);
 
 #ifdef __cplusplus
 }

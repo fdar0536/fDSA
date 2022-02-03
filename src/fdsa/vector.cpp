@@ -68,7 +68,7 @@ fdsa_exitstate fdsa_vector_init(fdsa_vector_api *ret)
     return fdsa_success;
 }
 
-fdsa_vector *fdsa_vector_create(size_t sizeOfData)
+FDSA_API fdsa_vector *fdsa_vector_create(size_t sizeOfData)
 {
     if (!sizeOfData)
     {
@@ -86,7 +86,7 @@ fdsa_vector *fdsa_vector_create(size_t sizeOfData)
     return vec;
 }
 
-fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vec)
+FDSA_API fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vec)
 {
     if (!vec) return fdsa_failed;
 
@@ -102,7 +102,7 @@ fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vec)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_at(fdsa_vector *vec, size_t index, void *dst)
+FDSA_API fdsa_exitstate fdsa_vector_at(fdsa_vector *vec, size_t index, void *dst)
 {
 
     if (!vec || !dst)
@@ -123,7 +123,7 @@ fdsa_exitstate fdsa_vector_at(fdsa_vector *vec, size_t index, void *dst)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vec,
+FDSA_API fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vec,
                                     size_t index,
                                     const void *src)
 {
@@ -145,7 +145,7 @@ fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vec,
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_clear(fdsa_vector *vec)
+FDSA_API fdsa_exitstate fdsa_vector_clear(fdsa_vector *vec)
 {
     if (!vec) return fdsa_failed;
 
@@ -154,7 +154,7 @@ fdsa_exitstate fdsa_vector_clear(fdsa_vector *vec)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_size(fdsa_vector *vec, size_t *dst)
+FDSA_API fdsa_exitstate fdsa_vector_size(fdsa_vector *vec, size_t *dst)
 {
     if (!vec || !dst)
     {
@@ -167,7 +167,7 @@ fdsa_exitstate fdsa_vector_size(fdsa_vector *vec, size_t *dst)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vec, size_t *dst)
+FDSA_API fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vec, size_t *dst)
 {
     if (!vec || !dst)
     {
@@ -180,7 +180,7 @@ fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vec, size_t *dst)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
+FDSA_API fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
 {
     if (!vec) return fdsa_failed;
 
@@ -209,7 +209,7 @@ fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vec, const void *src)
+FDSA_API fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vec, const void *src)
 {
     if (!vec || !src)
     {
@@ -233,9 +233,9 @@ fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vec, const void *src)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
-                                  size_t amount,
-                                  const void *src)
+FDSA_API fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
+                                           size_t amount,
+                                           const void *src)
 {
     if (!vec || !src)
     {
@@ -273,9 +273,9 @@ fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_vector_append(fdsa_vector *vec,
-                                  const void *in,
-                                  size_t inLen)
+FDSA_API fdsa_exitstate fdsa_vector_append(fdsa_vector *vec,
+                                           const void *in,
+                                           size_t inLen)
 {
     if (!vec || !in || !inLen) return fdsa_failed;
 
@@ -293,7 +293,7 @@ fdsa_exitstate fdsa_vector_append(fdsa_vector *vec,
     return fdsa_success;
 }
 
-const void *fdsa_vector_data(fdsa_vector *vec)
+FDSA_API const void *fdsa_vector_data(fdsa_vector *vec)
 {
     if (!vec) return NULL;
 
@@ -301,7 +301,7 @@ const void *fdsa_vector_data(fdsa_vector *vec)
     return vec->data;
 }
 
-void *fdsa_vector_takeData(fdsa_vector *vec)
+FDSA_API void *fdsa_vector_takeData(fdsa_vector *vec)
 {
     if (!vec) return NULL;
 

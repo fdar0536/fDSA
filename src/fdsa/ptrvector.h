@@ -34,29 +34,6 @@ extern "C"
 
 fdsa_exitstate fdsa_ptrVector_init(fdsa_ptrVector_api *);
 
-fdsa_ptrVector *fdsa_ptrVector_create(fdsa_freeFunc);
-
-fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *);
-
-void *fdsa_ptrVector_at(fdsa_ptrVector *, size_t);
-
-fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *, size_t, void *);
-
-fdsa_exitstate fdsa_ptrVector_clear(fdsa_ptrVector *);
-
-fdsa_exitstate fdsa_ptrVector_size(fdsa_ptrVector *, size_t *);
-
-fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *, size_t *);
-
-fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *, size_t);
-
-fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *, void *);
-
-fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *,
-                                     size_t,
-                                     void *,
-                                     void *(*)(void *));
-
 #ifdef __cplusplus
 }
 #endif

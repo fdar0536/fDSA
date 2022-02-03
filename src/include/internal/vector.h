@@ -70,6 +70,41 @@ typedef struct fdsa_vector_api
 
 } fdsa_vector_api;
 
+FDSA_API fdsa_vector *fdsa_vector_create(size_t sizeOfData);
+
+FDSA_API fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vector);
+
+FDSA_API fdsa_exitstate fdsa_vector_at(fdsa_vector *vector,
+                                       size_t index,
+                                       void *dst);
+
+FDSA_API fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vector,
+                                             size_t index,
+                                             const void *src);
+
+FDSA_API fdsa_exitstate fdsa_vector_clear(fdsa_vector *vector);
+
+FDSA_API fdsa_exitstate fdsa_vector_size(fdsa_vector *vector, size_t *dst);
+
+FDSA_API fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vector, size_t *dst);
+
+FDSA_API fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vector, size_t newSize);
+
+FDSA_API fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vector,
+                                             const void *src);
+
+FDSA_API fdsa_exitstate fdsa_vector_resize(fdsa_vector *vector,
+                                           size_t newSize,
+                                           const void *src);
+
+FDSA_API fdsa_exitstate fdsa_vector_append(fdsa_vector *vector,
+                                           const void *dataArray,
+                                           size_t dataLen);
+
+FDSA_API const void *fdsa_vector_data(fdsa_vector *vector);
+
+FDSA_API void *fdsa_vector_takeData(fdsa_vector *vector);
+
 #ifdef __cplusplus
 }
 #endif

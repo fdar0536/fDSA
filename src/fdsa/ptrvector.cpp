@@ -60,7 +60,7 @@ fdsa_exitstate fdsa_ptrVector_init(fdsa_ptrVector_api *ret)
     return fdsa_success;
 }
 
-fdsa_ptrVector *fdsa_ptrVector_create(fdsa_freeFunc freeFunc)
+FDSA_API fdsa_ptrVector *fdsa_ptrVector_create(fdsa_freeFunc freeFunc)
 {
     fdsa_ptrVector *ret = new (std::nothrow) fdsa_ptrVector;
     if (!ret)
@@ -73,7 +73,7 @@ fdsa_ptrVector *fdsa_ptrVector_create(fdsa_freeFunc freeFunc)
     return ret;
 }
 
-fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *vec)
+FDSA_API fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *vec)
 {
     if (!vec)
     {
@@ -98,7 +98,7 @@ fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *vec)
     return fdsa_success;
 }
 
-void *fdsa_ptrVector_at(fdsa_ptrVector *vec, size_t index)
+FDSA_API void *fdsa_ptrVector_at(fdsa_ptrVector *vec, size_t index)
 {
     if (!vec) return NULL;
 
@@ -114,9 +114,9 @@ void *fdsa_ptrVector_at(fdsa_ptrVector *vec, size_t index)
     return data[0];
 }
 
-fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *vec,
-                                       size_t index,
-                                       void *src)
+FDSA_API fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *vec,
+                                                size_t index,
+                                                void *src)
 {
     if (!vec)
     {
@@ -135,7 +135,7 @@ fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *vec,
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_clear(fdsa_ptrVector *vec)
+FDSA_API fdsa_exitstate fdsa_ptrVector_clear(fdsa_ptrVector *vec)
 {
     if (!vec)
     {
@@ -154,7 +154,7 @@ fdsa_exitstate fdsa_ptrVector_clear(fdsa_ptrVector *vec)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_size(fdsa_ptrVector *vec, size_t *dst)
+FDSA_API fdsa_exitstate fdsa_ptrVector_size(fdsa_ptrVector *vec, size_t *dst)
 {
     if (!vec || !dst)
     {
@@ -167,7 +167,7 @@ fdsa_exitstate fdsa_ptrVector_size(fdsa_ptrVector *vec, size_t *dst)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *vec, size_t *dst)
+FDSA_API fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *vec, size_t *dst)
 {
     if (!vec || !dst)
     {
@@ -180,7 +180,7 @@ fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *vec, size_t *dst)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
+FDSA_API fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
 {
     if (!vec)
     {
@@ -217,7 +217,7 @@ fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *vec, void *src)
+FDSA_API fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *vec, void *src)
 {
     if (!vec)
     {
@@ -243,10 +243,10 @@ fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *vec, void *src)
     return fdsa_success;
 }
 
-fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
-                                     size_t amount,
-                                     void *src,
-                                     void *(*deepCopyFunc)(void *))
+FDSA_API fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
+                                              size_t amount,
+                                              void *src,
+                                              void *(*deepCopyFunc)(void *))
 {
     if (!vec)
     {

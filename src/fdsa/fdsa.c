@@ -22,12 +22,9 @@
  */
 
 #include "config.h"
-#include "fdsa.h"
-#include "ptrmap.h"
-#include "vector.h"
-#include "ptrvector.h"
+#include "include/fdsa.h"
 
-const char *fdsa_version()
+FDSA_API const char *fdsa_version()
 {
     return PROJ_NAME" r"PROJ_VERSION;
 }
