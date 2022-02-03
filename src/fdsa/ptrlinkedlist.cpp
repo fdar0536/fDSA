@@ -21,11 +21,30 @@
  * SOFTWARE.
  */
 
+#include <mutex>
 #include <new>
 
 #include <cstdlib>
 
-#include "ptrlinkedlist.hpp"
+#include "ptrlinkedlist.h"
+
+typedef struct ptrLinkedListNode
+{
+    void *data = NULL;
+
+    struct ptrLinkedListNode *priv = NULL;
+
+    struct ptrLinkedListNode *next = NULL;
+} ptrLinkedListNode;
+
+typedef struct fdsa_ptrLinkedList
+{
+    ptrLinkedListNode *root = NULL;
+
+    fdsa_freeFunc dataFreeFunc = NULL;
+
+    std::mutex mutex;
+} fdsa_ptrLinkedList;
 
 extern "C"
 {

@@ -23,52 +23,24 @@
 
 #pragma once
 
-#include <mutex>
-
-#include <cinttypes>
+#include <inttypes.h>
 
 #include "include/internal/ptrmap.h"
+
+typedef struct ptrRBTreeNode ptrRBTreeNode;
+
+typedef struct fdsa_ptrMap fdsa_ptrMap;
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 typedef enum ptrRBTreeNodeColor
 {
     ptrRBTreeNodeColor_rad,
     ptrRBTreeNodeColor_black
 } ptrRBTreeNodeColor;
-
-typedef struct ptrRBTreeNode
-{
-    uint8_t *key;
-
-    uint8_t *value;
-
-    ptrRBTreeNodeColor color;
-
-    struct ptrRBTreeNode *parent;
-
-    struct ptrRBTreeNode *left;
-
-    struct ptrRBTreeNode *right;
-} ptrRBTreeNode;
-
-typedef struct fdsa_ptrMap
-{
-    ptrRBTreeNode *root;
-
-    ptrRBTreeNode *nil;
-
-    fdsa_cmpFunc keyCmpFunc;
-
-    fdsa_freeFunc keyFreeFunc;
-
-    fdsa_freeFunc valueFreeFunc;
-
-    std::mutex mutex;
-} fdsa_ptrMap;
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *);
 

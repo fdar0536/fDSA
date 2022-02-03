@@ -9,8 +9,8 @@ set(fdsa_public_headers
 
 set(fdsa_priv_headers
     fdsa/fdsa.h
-    fdsa/ptrlinkedlist.hpp
-    fdsa/ptrmap.hpp
+    fdsa/ptrlinkedlist.h
+    fdsa/ptrmap.h
     fdsa/ptrvector.h
     fdsa/vector.h
 

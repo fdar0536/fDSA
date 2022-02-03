@@ -21,11 +21,42 @@
  * SOFTWARE.
  */
 
+#include <mutex>
 #include <new>
 
 #include <cstdlib>
 
-#include "ptrmap.hpp"
+#include "ptrmap.h"
+
+typedef struct ptrRBTreeNode
+{
+    uint8_t *key = NULL;
+
+    uint8_t *value = NULL;
+
+    ptrRBTreeNodeColor color = ptrRBTreeNodeColor_black;
+
+    struct ptrRBTreeNode *parent = NULL;
+
+    struct ptrRBTreeNode *left = NULL;
+
+    struct ptrRBTreeNode *right = NULL;
+} ptrRBTreeNode;
+
+typedef struct fdsa_ptrMap
+{
+    ptrRBTreeNode *root = NULL;
+
+    ptrRBTreeNode *nil = NULL;
+
+    fdsa_cmpFunc keyCmpFunc = NULL;
+
+    fdsa_freeFunc keyFreeFunc = NULL;
+
+    fdsa_freeFunc valueFreeFunc = NULL;
+
+    std::mutex mutex;
+} fdsa_ptrMap;
 
 extern "C"
 {

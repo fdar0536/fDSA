@@ -21,23 +21,31 @@
  * SOFTWARE.
  */
 
-#include <inttypes.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
+#include <mutex>
+#include <new>
+
+#include <cinttypes>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 
 #include "vector.h"
 
 typedef struct fdsa_vector
 {
-    uint8_t *data;
+    uint8_t *data = NULL;
 
-    size_t sizeOfData;
+    size_t sizeOfData = 0;
 
-    size_t size;
+    size_t size = 0;
 
-    size_t capacity;
+    size_t capacity = 0;
+
+    std::mutex mutex;
 } fdsa_vector;
+
+extern "C"
+{
 
 fdsa_exitstate fdsa_vector_init(fdsa_vector_api *ret)
 {
@@ -67,7 +75,7 @@ fdsa_vector *fdsa_vector_create(size_t sizeOfData)
         return NULL;
     }
 
-    fdsa_vector *vec = calloc(1, sizeof (fdsa_vector));
+    fdsa_vector *vec = new (std::nothrow) fdsa_vector;
     if (!vec)
     {
         return NULL;
@@ -82,12 +90,15 @@ fdsa_exitstate fdsa_vector_destroy(fdsa_vector *vec)
 {
     if (!vec) return fdsa_failed;
 
+    vec->mutex.lock();
     if (vec->data)
     {
-        free(vec->data);
+        delete[] vec->data;
+        vec->data = NULL;
     }
 
-    free(vec);
+    vec->mutex.unlock();
+    delete vec;
     return fdsa_success;
 }
 
@@ -99,6 +110,7 @@ fdsa_exitstate fdsa_vector_at(fdsa_vector *vec, size_t index, void *dst)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (index >= vec->size)
     {
         return fdsa_failed;
@@ -120,6 +132,7 @@ fdsa_exitstate fdsa_vector_setValue(fdsa_vector *vec,
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (index >= vec->size)
     {
         return fdsa_failed;
@@ -136,6 +149,7 @@ fdsa_exitstate fdsa_vector_clear(fdsa_vector *vec)
 {
     if (!vec) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     vec->size = 0;
     return fdsa_success;
 }
@@ -147,6 +161,7 @@ fdsa_exitstate fdsa_vector_size(fdsa_vector *vec, size_t *dst)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     *dst = vec->size;
 
     return fdsa_success;
@@ -159,6 +174,7 @@ fdsa_exitstate fdsa_vector_capacity(fdsa_vector *vec, size_t *dst)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     *dst = vec->capacity;
 
     return fdsa_success;
@@ -168,13 +184,14 @@ fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
 {
     if (!vec) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (newSize <= vec->capacity)
     {
         // do nothing
         return fdsa_success;
     }
 
-    uint8_t *newData = calloc(newSize, vec->sizeOfData);
+    uint8_t *newData = new (std::nothrow) uint8_t[newSize * vec->sizeOfData]();
     if (!newData)
     {
         return fdsa_failed;
@@ -183,7 +200,7 @@ fdsa_exitstate fdsa_vector_reserve(fdsa_vector *vec, size_t newSize)
     if (vec->data)
     {
         memcpy(newData, vec->data, vec->sizeOfData * vec->size);
-        free(vec->data);
+        delete[] vec->data;
     }
 
     vec->data = newData;
@@ -199,7 +216,7 @@ fdsa_exitstate fdsa_vector_pushBack(fdsa_vector *vec, const void *src)
         return fdsa_failed;
     }
 
-
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (vec->size == vec->capacity)
     {
         if (fdsa_vector_reserve(vec, vec->capacity + 1) == fdsa_failed)
@@ -235,6 +252,7 @@ fdsa_exitstate fdsa_vector_resize(fdsa_vector *vec,
 
     if (vec->size > amount)
     {
+        std::lock_guard<std::mutex> lock(vec->mutex);
         vec->size = amount;
     }
     else if (vec->size < amount)
@@ -261,6 +279,7 @@ fdsa_exitstate fdsa_vector_append(fdsa_vector *vec,
 {
     if (!vec || !in || !inLen) return fdsa_failed;
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (fdsa_vector_reserve(vec, vec->capacity + inLen) == fdsa_failed)
     {
         return fdsa_failed;
@@ -278,6 +297,7 @@ const void *fdsa_vector_data(fdsa_vector *vec)
 {
     if (!vec) return NULL;
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     return vec->data;
 }
 
@@ -285,6 +305,7 @@ void *fdsa_vector_takeData(fdsa_vector *vec)
 {
     if (!vec) return NULL;
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     uint8_t *ret = vec->data;
 
     vec->capacity = 0;
@@ -292,3 +313,5 @@ void *fdsa_vector_takeData(fdsa_vector *vec)
     vec->data = NULL;
     return ret;
 }
+
+} // end extern "C"

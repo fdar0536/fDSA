@@ -23,30 +23,14 @@
 
 #pragma once
 
-#include <mutex>
-
-#include <cinttypes>
+#include <inttypes.h>
 
 #include "include/internal/defines.h"
 #include "include/internal/ptrlinkedlist.h"
 
-typedef struct ptrLinkedListNode
-{
-    void *data;
+typedef struct ptrLinkedListNode ptrLinkedListNode;
 
-    struct ptrLinkedListNode *priv;
-
-    struct ptrLinkedListNode *next;
-} ptrLinkedListNode;
-
-typedef struct fdsa_ptrLinkedList
-{
-    ptrLinkedListNode *root;
-
-    fdsa_freeFunc dataFreeFunc;
-
-    std::mutex mutex;
-} fdsa_ptrLinkedList;
+typedef struct fdsa_ptrLinkedList fdsa_ptrLinkedList;
 
 #ifdef __cplusplus
 extern "C"

@@ -28,13 +28,13 @@
 
 typedef struct fdsa_ptrVector
 {
-    uint8_t **data;
+    uint8_t **data = NULL;
 
-    fdsa_freeFunc freeFunc;
+    fdsa_freeFunc freeFunc = NULL;
 
-    size_t size;
+    size_t size = NULL;
 
-    size_t capacity;
+    size_t capacity = 0;
 
     std::mutex mutex;
 } fdsa_ptrVector;
@@ -253,7 +253,6 @@ fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
         return fdsa_failed;
     }
 
-    std::lock_guard<std::mutex> lock(vec->mutex);
     if (vec->capacity < amount)
     {
         if (fdsa_ptrVector_reserve(vec, amount) == fdsa_failed)
@@ -265,6 +264,7 @@ fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
     size_t i;
     if (vec->size > amount)
     {
+        std::lock_guard<std::mutex> lock(vec->mutex);
         for (i = amount; i < vec->size; ++i)
         {
             vec->freeFunc(vec->data[i]);

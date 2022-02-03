@@ -103,7 +103,7 @@ int main()
         return 1;
     }
 
-    uint8_t res;
+    uint8_t res = 0;
     if (mapApi->isEmpty(map, &res) == fdsa_failed)
     {
         fputs("Fail to detect map is empty or not.", stderr);
@@ -138,7 +138,9 @@ int main()
         return 1;
     }
 
-    if (mapApi->insertNode(map, "123", data) == fdsa_failed)
+    uint8_t key1[4];
+    memcpy(key1, "123", 4);
+    if (mapApi->insertNode(map, key1, data) == fdsa_failed)
     {
         fputs("Fail to insert node.", stderr);
         if (mapApi->destory(map) == fdsa_failed)
@@ -163,7 +165,9 @@ int main()
 
     data->a = 1;
     data->b = 2;
-    if (mapApi->insertNode(map, "456", data) == fdsa_failed)
+    uint8_t key2[4];
+    memcpy(key2, "456", 4);
+    if (mapApi->insertNode(map, key2, data) == fdsa_failed)
     {
         fputs("Fail to insert node.", stderr);
         if (mapApi->destory(map) == fdsa_failed)
@@ -188,7 +192,9 @@ int main()
 
     data->a = 2;
     data->b = 3;
-    if (mapApi->insertNode(map, "789", data) == fdsa_failed)
+    uint8_t key3[4];
+    memcpy(key3, "789", 4);
+    if (mapApi->insertNode(map, key3, data) == fdsa_failed)
     {
         fputs("Fail to insert node.", stderr);
         if (mapApi->destory(map) == fdsa_failed)
@@ -219,7 +225,9 @@ int main()
 
     data->a = 5;
     data->b = 5;
-    if (mapApi->insertNode(map, "123", data) == fdsa_failed)
+    uint8_t key4[4];
+    memcpy(key4, "123", 4);
+    if (mapApi->insertNode(map, key4, data) == fdsa_failed)
     {
         fputs("Fail to replace node.", stderr);
         if (mapApi->destory(map) == fdsa_failed)
