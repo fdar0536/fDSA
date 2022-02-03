@@ -23,14 +23,11 @@
 
 #pragma once
 
-#include <inttypes.h>
+#include <mutex>
+
+#include <cinttypes>
 
 #include "include/internal/ptrmap.h"
-
-#ifdef __cplusplus
-extern "C"
-{
-#endif
 
 typedef enum ptrRBTreeNodeColor
 {
@@ -64,7 +61,14 @@ typedef struct fdsa_ptrMap
     fdsa_freeFunc keyFreeFunc;
 
     fdsa_freeFunc valueFreeFunc;
+
+    std::mutex mutex;
 } fdsa_ptrMap;
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *);
 

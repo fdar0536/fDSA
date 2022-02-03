@@ -30,11 +30,6 @@
 #include "include/internal/defines.h"
 #include "include/internal/ptrlinkedlist.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 typedef struct ptrLinkedListNode
 {
     void *data;
@@ -52,6 +47,11 @@ typedef struct fdsa_ptrLinkedList
 
     std::mutex mutex;
 } fdsa_ptrLinkedList;
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 fdsa_exitstate fdsa_ptrLinkedList_init(fdsa_ptrLinkedList_api *);
 

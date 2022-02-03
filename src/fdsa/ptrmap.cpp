@@ -21,9 +21,14 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
+#include <new>
 
-#include "ptrmap.h"
+#include <cstdlib>
+
+#include "ptrmap.hpp"
+
+extern "C"
+{
 
 fdsa_exitstate fdsa_ptrMap_init(fdsa_ptrMap_api *map)
 {
@@ -50,17 +55,17 @@ fdsa_ptrMap *fdsa_ptrMap_create(fdsa_cmpFunc keyCmpFunc,
         return NULL;
     }
 
-    fdsa_ptrMap *ret = calloc(1, sizeof(fdsa_ptrMap));
+    fdsa_ptrMap *ret = new (std::nothrow) fdsa_ptrMap;
     if (!ret)
     {
         return NULL;
     }
 
     // create nil
-    ret->nil = calloc(1, sizeof(ptrRBTreeNode));
+    ret->nil = new (std::nothrow) ptrRBTreeNode;
     if (!ret->nil)
     {
-        free(ret);
+        delete ret;
         return NULL;
     }
 
@@ -88,13 +93,15 @@ fdsa_exitstate fdsa_ptrMap_destroy(fdsa_ptrMap *tree)
 
     // now root has been destroyed
     destroyPtrRBTreeNode(tree->nil, tree->keyFreeFunc, tree->valueFreeFunc);
-    free(tree);
+    delete tree;
     return fdsa_success;
 }
 
 fdsa_exitstate fdsa_ptrMap_isEmpty(fdsa_ptrMap *tree, uint8_t *res)
 {
     if (!tree || !res) return fdsa_failed;
+
+    std::lock_guard<std::mutex> lock(tree->mutex);
     *res = (tree->root == tree->nil);
     return fdsa_success;
 }
@@ -106,6 +113,7 @@ void *fdsa_ptrMap_at(fdsa_ptrMap *tree, void *key)
         return NULL;
     }
 
+    std::lock_guard<std::mutex> lock(tree->mutex);
     ptrRBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
     if (res == tree->nil)
     {
@@ -122,6 +130,7 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(tree->mutex);
     ptrRBTreeNode *res = fdsa_ptrMap_searchNode(tree, key);
     if (res != tree->nil)
     {
@@ -131,7 +140,7 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
             tree->valueFreeFunc(res->value);
         }
 
-        res->value = value;
+        res->value = reinterpret_cast<uint8_t *>(value);
         return fdsa_success;
     }
 
@@ -142,8 +151,8 @@ fdsa_exitstate fdsa_ptrMap_insertNode(fdsa_ptrMap *tree, void *key, void *value)
         return fdsa_failed;
     }
 
-    insert_node->key = key;
-    insert_node->value = value;
+    insert_node->key = reinterpret_cast<uint8_t *>(key);
+    insert_node->value = reinterpret_cast<uint8_t *>(value);
 
     ptrRBTreeNode *y = tree->nil;
     ptrRBTreeNode *x = tree->root;
@@ -187,6 +196,7 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *tree, void *key)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(tree->mutex);
     ptrRBTreeNode *delete_node = fdsa_ptrMap_searchNode(tree, key);
     if (delete_node == tree->nil)
     {
@@ -243,7 +253,7 @@ fdsa_exitstate fdsa_ptrMap_deleteNode(fdsa_ptrMap *tree, void *key)
         if (tree->valueFreeFunc) tree->valueFreeFunc(delete_node->value);
         delete_node->value = y->value;
 
-        free(y);
+        delete y;
     }
     else
     {
@@ -266,7 +276,7 @@ ptrRBTreeNode *createPtrRBTreeNode(ptrRBTreeNode *nil)
         return NULL;
     }
 
-    ptrRBTreeNode *ret = calloc(1, sizeof(ptrRBTreeNode));
+    ptrRBTreeNode *ret = new (std::nothrow) ptrRBTreeNode;
     if (!ret)
     {
         return NULL;
@@ -301,7 +311,7 @@ void destroyPtrRBTreeNode(ptrRBTreeNode *node,
         if (valueFreeFunc) valueFreeFunc(node->value);
     }
 
-    free(node);
+    delete node;
 }
 
 void fdsa_ptrMap_clear(fdsa_ptrMap *tree,
@@ -605,3 +615,5 @@ void fdsa_ptrMap_deleteFixedUp(fdsa_ptrMap *tree, ptrRBTreeNode *current)
 
     current->color = ptrRBTreeNodeColor_black; // insure root is black
 } // end fdsa_ptrMap_deleteFixedUp;
+
+} // end extern "C"

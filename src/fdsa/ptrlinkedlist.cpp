@@ -21,6 +21,8 @@
  * SOFTWARE.
  */
 
+#include <new>
+
 #include <cstdlib>
 
 #include "ptrlinkedlist.hpp"
