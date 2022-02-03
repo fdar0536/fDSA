@@ -17,9 +17,12 @@
 *    <http://www.gnu.org/licenses/>.
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <mutex>
+#include <new>
+
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 
 #include "ptrvector.h"
 
@@ -32,7 +35,12 @@ typedef struct fdsa_ptrVector
     size_t size;
 
     size_t capacity;
+
+    std::mutex mutex;
 } fdsa_ptrVector;
+
+extern "C"
+{
 
 fdsa_exitstate fdsa_ptrVector_init(fdsa_ptrVector_api *ret)
 {
@@ -54,7 +62,7 @@ fdsa_exitstate fdsa_ptrVector_init(fdsa_ptrVector_api *ret)
 
 fdsa_ptrVector *fdsa_ptrVector_create(fdsa_freeFunc freeFunc)
 {
-    fdsa_ptrVector *ret = calloc(1, sizeof(fdsa_ptrVector));
+    fdsa_ptrVector *ret = new (std::nothrow) fdsa_ptrVector;
     if (!ret)
     {
         return NULL;
@@ -72,6 +80,7 @@ fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *vec)
         return fdsa_failed;
     }
 
+    vec->mutex.lock();
     if (vec->data)
     {
         size_t i = 0;
@@ -80,10 +89,12 @@ fdsa_exitstate fdsa_ptrVector_destroy(fdsa_ptrVector *vec)
             if (vec->freeFunc) vec->freeFunc(vec->data[i]);
         }
 
-        free(vec->data);
+        delete[] vec->data;
+        vec->data = NULL;
     }
 
-    free(vec);
+    vec->mutex.unlock();
+    delete vec;
     return fdsa_success;
 }
 
@@ -91,6 +102,7 @@ void *fdsa_ptrVector_at(fdsa_ptrVector *vec, size_t index)
 {
     if (!vec) return NULL;
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (index >= vec->size)
     {
         return NULL;
@@ -111,13 +123,14 @@ fdsa_exitstate fdsa_ptrVector_setValue(fdsa_ptrVector *vec,
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (index >= vec->size)
     {
         return fdsa_failed;
     }
 
     vec->freeFunc(vec->data[index]);
-    vec->data[index] = src;
+    vec->data[index] = reinterpret_cast<uint8_t *>(src);
 
     return fdsa_success;
 }
@@ -129,6 +142,7 @@ fdsa_exitstate fdsa_ptrVector_clear(fdsa_ptrVector *vec)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     size_t i = 0;
     for (i = 0; i < vec->size; ++i)
     {
@@ -147,6 +161,7 @@ fdsa_exitstate fdsa_ptrVector_size(fdsa_ptrVector *vec, size_t *dst)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     *dst = vec->size;
 
     return fdsa_success;
@@ -159,6 +174,7 @@ fdsa_exitstate fdsa_ptrVector_capacity(fdsa_ptrVector *vec, size_t *dst)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     *dst = vec->capacity;
 
     return fdsa_success;
@@ -171,13 +187,14 @@ fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (newSize <= vec->capacity)
     {
         // do nothing
         return fdsa_success;
     }
 
-    uint8_t **newData = calloc(newSize, sizeof(uint8_t *));
+    uint8_t **newData = new (std::nothrow) uint8_t*[newSize]();
     if (!newData)
     {
         return fdsa_failed;
@@ -191,7 +208,7 @@ fdsa_exitstate fdsa_ptrVector_reserve(fdsa_ptrVector *vec, size_t newSize)
             newData[i] = vec->data[i];
         }
 
-        free(vec->data);
+        delete[] vec->data;
     }
 
     vec->data = newData;
@@ -207,6 +224,7 @@ fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *vec, void *src)
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (vec->size == vec->capacity)
     {
         if (fdsa_ptrVector_reserve(vec, vec->capacity + 1) == fdsa_failed)
@@ -219,7 +237,7 @@ fdsa_exitstate fdsa_ptrVector_pushBack(fdsa_ptrVector *vec, void *src)
 
     // array just contain pointer
     data += vec->size;
-    data[0] = src;
+    data[0] = reinterpret_cast<uint8_t *>(src);
     ++vec->size;
 
     return fdsa_success;
@@ -235,6 +253,7 @@ fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
         return fdsa_failed;
     }
 
+    std::lock_guard<std::mutex> lock(vec->mutex);
     if (vec->capacity < amount)
     {
         if (fdsa_ptrVector_reserve(vec, amount) == fdsa_failed)
@@ -276,3 +295,5 @@ fdsa_exitstate fdsa_ptrVector_resize(fdsa_ptrVector *vec,
 
     return fdsa_success;
 }
+
+} // end extern "C"
